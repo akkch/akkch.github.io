@@ -1,0 +1,17 @@
+
+#coords
+{
+    width: 800px;
+    height: 100px;
+    border-color:rgb(40,40,40);
+    border-width: 1px;
+    border-style:solid;
+}
+
+canvas
+{
+    position: absolute;
+    border-color:rgb(40,40,40);
+    border-width: 1px;
+    border-style:solid;
+}
