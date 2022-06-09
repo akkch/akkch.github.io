@@ -56,17 +56,18 @@ class Entity
 
     //#region Public Methods------------------------------------------------
 
-    //Moves a Pac Man up
+    //Moves a Entity up
     //Arguments:
-    //  -   iDelta  - The distance to move the Entity up from the current position
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
     //Return:
     //  -   true/false - Was moved/not
-    MoveUp(iDelta,oBoard = -1, arrEntities = -1)
+    MoveUp(oBoard = -1, arrEntities = -1)
     {
         var bIsMoved = false;
-        if(arrEntities != -1 && this.#IsUpDirectionFree(arrEntities,iDelta))
+        if(oBoard != -1 && arrEntities != -1 && this.#IsUpDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y>oBoard.TopEntityLimit)
         {
-            this.#setY(this.Center_Y - iDelta);
+            this.#setY(this.Center_Y - oBoard.BoardSpeed);
             this._iCurrentDirection = Direction.Up;
             bIsMoved = true;
         }
@@ -74,17 +75,18 @@ class Entity
         return bIsMoved;
     }
 
-    //Moves a Pac Man down
+    //Moves a Entity down
     //Arguments:
-    //  -   iDelta  - The distance to move the Entity down from the current position
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
     //Return:
     //  -   true/false - Was moved/not
-    MoveDown(iDelta,oBoard = -1, arrEntities = -1)
+    MoveDown(oBoard = -1, arrEntities = -1)
     {
         var bIsMoved = false;
-        if(arrEntities != -1 && this.#IsDownDirectionFree(arrEntities,iDelta))
+        if(oBoard != -1 && arrEntities != -1 && this.#IsDownDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y<oBoard.DownEntityLimit)
         {
-            this.#setY(this.Center_Y + iDelta);
+            this.#setY(this.Center_Y + oBoard.BoardSpeed);
         this._iCurrentDirection = Direction.Down;
             bIsMoved = true;
         }
@@ -92,17 +94,18 @@ class Entity
         return bIsMoved
     }
 
-    //Moves a Pac Man right
+    //Moves a Entity right
     //Arguments:
-    //  -   iDelta  - The distance to move the Entity right from the current position
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
     //Return:
     //  -   true/false - Was moved/not
-    MoveRight(iDelta,oBoard = -1, arrEntities = -1)
+    MoveRight(oBoard = -1, arrEntities = -1)
     {
         var bIsMoved = false;
-        if(arrEntities != -1 && this.#IsRightDirectionFree(arrEntities,iDelta))
+        if(oBoard != -1 && arrEntities != -1 && this.#IsRightDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X<oBoard.RightEntityLimit)
         {
-            this.#setX(this.#_rCenter_X + iDelta);
+            this.#setX(this.#_rCenter_X + oBoard.BoardSpeed);
             this._iCurrentDirection = Direction.Right;
             bIsMoved = true;
         }
@@ -110,17 +113,18 @@ class Entity
         return bIsMoved
     }
 
-    //Moves a Pac Man left
+    //Moves a Entity left
     //Arguments:
-    //  -   iDelta  - The distance to move the Entity left from the current position
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
     //Return:
     //  -   true/false - Was moved/not
-    MoveLeft(iDelta,oBoard = -1, arrEntities = -1)
+    MoveLeft(oBoard = -1, arrEntities = -1)
     {
         var bIsMoved = false;
-        if(arrEntities != -1 && this.#IsLeftDirectionFree(arrEntities,iDelta))
+        if(oBoard != -1 && arrEntities != -1 && this.#IsLeftDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X>oBoard.LeftEntityLimit)
         {
-            this.#setX(this.#_rCenter_X - iDelta);
+            this.#setX(this.#_rCenter_X - oBoard.BoardSpeed);
             this._iCurrentDirection = Direction.Left;
             bIsMoved = true;
         }

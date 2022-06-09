@@ -6,6 +6,7 @@ class Monster extends Entity
     #_sImagePath;   //Path to Monster image
     #_oImg;		    //Link to image
     #_iImgSize;     //Image size in pixels
+    #_bMoved;       //Moving indication flag
 
     //#endregion //Fields
 
@@ -33,12 +34,50 @@ class Monster extends Entity
         this.#_oImg = new Image();
         this.#_oImg.src = this.#_sImagePath;
         this.Draw();
+
+        this.#_bMoved = false;
     }
 
     //#endregion //Constructor
 
     //#region Public Methods------------------------------------------------
 
+    Run(oBoard, arrMonsters)
+    {
+        switch(this._iCurrentDirection)
+        {
+            case 0:
+                this.#_bMoved = this.MoveUp(oBoard,arrMonsters);
+            break;
+    
+            case 1:
+                this.#_bMoved = this.MoveDown(oBoard,arrMonsters);
+            break;
+    
+            case 2:
+                this.#_bMoved = this.MoveRight(oBoard,arrMonsters);
+            break;
+    
+            case 3:
+                this.#_bMoved = this.MoveLeft(oBoard,arrMonsters);
+            break;
+    
+            default:
+                alert("Error direction was received : " + this._iCurrentDirection);
+                this._iCurrentDirection = Direction.Right;
+                break
+        };
+    
+        if(this.#_bMoved == true)
+        {
+            this.Draw();
+        }
+        else
+        {
+            this._iCurrentDirection = Math.floor(Math.random() * 4);
+        }
+    }
+    
     //Draws Monster
     //Arguments:
     //  -   None
@@ -69,8 +108,8 @@ class Monster extends Entity
             {
                 oContext.drawImage(oImg,rX,rY);
             }
-        else
-        oContext.drawImage(oImg,rX,rY);
+         else
+             oContext.drawImage(oImg,rX,rY);
     }
 
     //Calculate the initial image coordinate relative to the center

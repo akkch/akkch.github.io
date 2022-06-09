@@ -3,14 +3,14 @@ class Cell
 {
     //#region Fields--------------------------------------------------------
 
-    static iCellSize = 80;      //Cell size in pixels
-    #_iRow;                     //Cell row in the board
-    #_iCol;                     //Cell column in the board
-    #_oContentType;             //Cell content type(Refer to CellContentTypes class)
-    #_rCenter_X;                //Cell center X-axis coordinate
-    #_rCenter_Y;                //Cell center Y-axis coordinate
-    #_bEaten;                   //Inication flag - allows to check if the contents of the cell have been eaten by Pac Man
-    #_bBoard = -1;              //Board type
+    static iCellSize;   //Cell size in pixels
+    #_iRow;             //Cell row in the board
+    #_iCol;             //Cell column in the board
+    #_oContentType;     //Cell content type(Refer to CellContentTypes class)
+    #_rCenter_X;        //Cell center X-axis coordinate
+    #_rCenter_Y;        //Cell center Y-axis coordinate
+    #_bEaten;           //Inication flag - allows to check if the contents of the cell have been eaten by Pac Man
+    #_bBoard = -1;      //Board type
 
     //#endregion //Fields
 
@@ -58,8 +58,9 @@ class Cell
 
     //Main constructor
     //Arguments:
-    //  -   iRow           - row index of the current cell on the board
-    //  -   iCol           - column index of the current cell on the board
+    //  -   oBoard         - Link to board
+    //  -   iRow           - Row index of the current cell on the board
+    //  -   iCol           - Column index of the current cell on the board
     //Return:
     //  -   None
     constructor(iRow, iCol)
