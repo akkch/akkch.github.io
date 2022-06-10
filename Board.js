@@ -44,7 +44,7 @@ class Board
         return this.#_iDownEntityLimit;
     }
 
-    Draw(oBoardConfig, iRowsNum, iColsNum)
+    Draw(oBoardConfig, oCellTypeConfig, iRowsNum, iColsNum)
     {
         this.#_oCanvas  = document.getElementById(oBoardConfig.CanvasName);
         this.#_iWidth   = this.#_oCanvas.width;

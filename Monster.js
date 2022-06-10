@@ -1,12 +1,61 @@
+//The class that represents the list of Monster objects
+class Monsters
+{
+    //#region Fields--------------------------------------------------------
+
+    static #_oMonstConf = new MonstersConfig();
+    static iInitialPos_X = 40;
+    static iInitialPos_Y = 40;
+    static iStep = 80;
+
+    //#endregion //Fields
+
+    //#region Public Methods------------------------------------------------
+
+    //Runs all the monsters
+    //Arguments:
+    //  -   oBoard    - Link to the game board
+    //Return:
+    //  -   None
+    static Run(oBoard)
+    {
+        var MosterCanvas = document.getElementById(Monsters.#_oMonstConf.CanvasName);
+        for(let i=0;i<Monsters.#_oMonstConf.ArrImagePath.length;i++)
+        {
+            new Monster(oBoard,MosterCanvas,Monsters.iInitialPos_X, Monsters.#setInitPosition(i,Monsters.iInitialPos_Y) ,Monsters.#_oMonstConf.ArrImagePath[i],Monsters.#_oMonstConf.ImageSize);
+        }
+    }
+    
+    //#endregion //Public Methods
+
+    //#region Private Methods-----------------------------------------------
+
+    //Set initial position of current moster
+    //Arguments:
+    //  -   iMonsterNum             - Number of current monster
+    //  -   iFirstMonsteInitCoord   - Initial position of first monster coordinate
+    //Return:
+    //  -   Initial position of current moster
+    static #setInitPosition(iMonsterNum, iFirstMonsteInitCoord)
+    {
+        return iFirstMonsteInitCoord + (iMonsterNum*Monsters.iStep);
+    }
+
+    //#endregion //Private Methods
+}
+
+
 //The class that represents the Monster object
 class Monster extends Entity
 {
     //#region Fields--------------------------------------------------------
 
-    #_sImagePath;   //Path to Monster image
-    #_oImg;		    //Link to image
-    #_iImgSize;     //Image size in pixels
-    #_bMoved;       //Moving indication flag
+    static #_arrMonsters = [];  //List of monster instances
+    static #_oBoard;            //Link to game board
+    #_sImagePath;               //Path to Monster image
+    #_oImg;		                //Link to image
+    #_iImgSize;                 //Image size in pixels
+    #_bMoved;                   //Moving indication flag
 
     //#endregion //Fields
 
@@ -24,7 +73,7 @@ class Monster extends Entity
     //  -   iImgSize    - Size of Monster image(In px)
     //Return:
     //  -   None
-    constructor(oCanvas,rCenter_X, rCenter_Y, sImagePath, iImgSize)
+    constructor(oBoard, oCanvas, rCenter_X, rCenter_Y, sImagePath, iImgSize)
     {
         super(oCanvas,rCenter_X,rCenter_Y,iImgSize,iImgSize);
         
@@ -33,33 +82,43 @@ class Monster extends Entity
 
         this.#_oImg = new Image();
         this.#_oImg.src = this.#_sImagePath;
-        this.Draw();
+        this.#draw();
 
         this.#_bMoved = false;
+
+        Monster.#_oBoard = oBoard;
+        Monster.#_arrMonsters.push(this);
+
+        new Timer(this,Monster.#_oBoard.BoardSpeed,-1);
     }
 
     //#endregion //Constructor
 
     //#region Public Methods------------------------------------------------
 
-    Run(oBoard, arrMonsters)
+    //On tick event handler
+    //Arguments:
+    //  -   None
+    //Return:
+    //  -   None
+    OnTick()
     {
         switch(this._iCurrentDirection)
         {
             case 0:
-                this.#_bMoved = this.MoveUp(oBoard,arrMonsters);
+                this.#_bMoved = super.MoveUp(Monster.#_oBoard,Monster.#_arrMonsters);
             break;
     
             case 1:
-                this.#_bMoved = this.MoveDown(oBoard,arrMonsters);
+                this.#_bMoved = super.MoveDown(Monster.#_oBoard,Monster.#_arrMonsters);
             break;
     
             case 2:
-                this.#_bMoved = this.MoveRight(oBoard,arrMonsters);
+                this.#_bMoved = super.MoveRight(Monster.#_oBoard,Monster.#_arrMonsters);
             break;
     
             case 3:
-                this.#_bMoved = this.MoveLeft(oBoard,arrMonsters);
+                this.#_bMoved = super.MoveLeft(Monster.#_oBoard,Monster.#_arrMonsters);
             break;
     
             default:
@@ -70,7 +129,7 @@ class Monster extends Entity
     
         if(this.#_bMoved == true)
         {
-            this.Draw();
+            this.#draw();
         }
         else
         {
@@ -78,20 +137,20 @@ class Monster extends Entity
         }
     }
     
+    //#endregion //Public Methods
+
+    //#region Private Methods-----------------------------------------------
+
     //Draws Monster
     //Arguments:
     //  -   None
     //Return:
     //  -   None
-    Draw()
+    #draw()
     {
         this._clearEntity();
         this.#drawImage(this._oContext, this.#_oImg, this.#GetImgCoord(this.Center_X), this.#GetImgCoord(this.Center_Y));
     }
-
-    //#endregion //Public Methods
-
-    //#region Private Methods-----------------------------------------------
 
     //Draw type image
     //Arguments:

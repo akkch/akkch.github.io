@@ -530,3 +530,107 @@ class Type
     //#endregion //Private Methods
 
 }
+
+//A class that allows to get setinterval behavior in multiple contexts
+class Timer
+{
+    //#region Fields--------------------------------------------------------
+
+    static #_oInstances = [];   //List of timer instances
+    #_oOnTickInstance;          //Subscriber to the OnTick event
+    #_iTicksCount;              //Couner of ticks of the current instance
+    #_iRepetitionsCount;        //Counter of repetitions of the current instance
+    #_iTicks;                   //Delay in ticks between current instance function calls
+    #_iNumOfRepetitions;        //Number of repetitions for current instance function calls
+
+    //#endregion //Fields
+
+    //#region Constructors--------------------------------------------------
+
+    //Static constructor - Main timer start
+    static
+    {
+        window.setInterval(Timer.OnTickEventHandler, 10);
+    }
+
+    //Main constructor
+    //Arguments:
+    //  -   oOnTickInstance   - Subscriber to the OnTick event(Must be include OnTick function)
+    //  -   delayMs           - Delay in ms between current instance function calls
+    //  -   NumOfRepetitions  - Number of repetitions for current instance function calls
+    //Return:
+    //  -   None
+    constructor(oOnTickInstance, delayMs=10, NumOfRepetitions=-1)
+    {
+        this.#_oOnTickInstance = oOnTickInstance;
+        this.#_iTicksCount = 0;
+        this.#_iTicks = (delayMs/10)|0;
+        this.#_iNumOfRepetitions = NumOfRepetitions;
+        Timer.#_oInstances.push(this);
+    }
+    
+    //#endregion //Constructor
+
+    //#region Public Methods------------------------------------------------
+
+    //Main timer tick event handler
+    //Arguments:
+    //  -   None
+    //Return:
+    //  -   None
+    static OnTickEventHandler()
+    {
+        for(var i in Timer.#_oInstances)
+        {
+            Timer.#_oInstances[i].#OnTick();
+        }
+    }
+    
+    //#endregion //Public Methods
+
+    //#region Private Methods-----------------------------------------------
+
+    //Current instance OnTick event handler
+    //Arguments:
+    //  -   None
+    //Return:
+    //  -   None
+    #OnTick()
+    {
+        if(this.#_iTicksCount >= this.#_iTicks)
+        {
+            this.#_oOnTickInstance.OnTick();
+            this.#_iTicksCount = 0;
+
+            if(this.#_iNumOfRepetitions > -1)
+            {
+                this.#_iRepetitionsCount++;
+                if(this.#_iRepetitionsCount >= this.#_iNumOfRepetitions)
+                {
+                    this.#stop();
+                }
+            }
+        }
+        this.#_iTicksCount ++; 
+    }
+
+    //Current instance timer stop
+    //Arguments:
+    //  -   None
+    //Return:
+    //  -   None
+    #stop()
+    {
+        var index = Timer.#_oInstances.indexOf(this);
+        Timer.#_oInstances.splice(index, 1);
+    }
+
+    //#endregion //Private Methods
+
+}
+
+class Coordinates
+{
+    X;
+    Y;
+}

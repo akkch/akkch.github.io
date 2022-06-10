@@ -3,25 +3,20 @@ class Config
 {
     //#region Fields--------------------------------------------------------
 
-    static rGAME_ENTITY_SIZE    = 64;                       //Size of entity images
-    static rBOARD_SPEED         = 5;                        //Board speed
-    static sBOARD_CANVAS_NAME   = "BoardCanvas";            //Board canvas name
-    // static rBOARD_START_POS_X   = 40;                       //Left X-axis movement limit
-    // static rBOARD_START_POS_Y   = 40;                       //Top Y-axis movement limit
-    // static rBOARD_END_POS_X     = 40;                       //Right X-axis movement limit
-    // static rBOARD_END_POS_Y     = 40;                       //Bottom Y-axis movement limit
+    static rGAME_ENTITY_SIZE        = 64;                       //Size of entity images
+    static rBOARD_SPEED             = 5;                        //Board speed
+    static sBOARD_CANVAS_NAME       = "BoardCanvas";            //Board canvas name
 
-    static rPAC_MAN_EYE_RADIUS  = 5;                        //Pac man eye radius
-    static sPAC_MAN_BODY_COLOR  = "mediumslateblue";        //Pac man body color
-    static sPAC_MAN_EYE_COLOR   = "black";                  //Pac man eye color
-    static rPAC_MAN_ANGLE_DELTA = 0.05;                     //Delta change in the angle of opening/closing of the mouth
+    static rPAC_MAN_EYE_RADIUS      = 5;                        //Pac man eye radius
+    static sPAC_MAN_BODY_COLOR      = "mediumslateblue";        //Pac man body color
+    static sPAC_MAN_EYE_COLOR       = "black";                  //Pac man eye color
+    static rPAC_MAN_ANGLE_DELTA     = 0.05;                     //Delta change in the angle of opening/closing of the mouth
     
-    static sMONSTERS_CANVAS_NAME= "MonstersCanvas";         //Monsters canvas name
-    static sMONSTER_0_IMG_PATH  = "Resources/monster0.png";  //Monster image path
-    static sMONSTER_1_IMG_PATH  = "Resources/monster1.png";  //Monster image path
-    static sMONSTER_2_IMG_PATH  = "Resources/monster2.png";  //Monster image path
-    static sMONSTER_3_IMG_PATH  = "Resources/monster3.png";  //Monster image path
-    static iMONSTER_QTY         = 4;                        //Size of monsters images
+    static sMONSTERS_CANVAS_NAME    = "MonstersCanvas";         //Monsters canvas name
+    static sMONSTER_0_IMG_PATH      = "Resources/monster0.png"; //Monster image path
+    static sMONSTER_1_IMG_PATH      = "Resources/monster1.png"; //Monster image path
+    static sMONSTER_2_IMG_PATH      = "Resources/monster2.png"; //Monster image path
+    static sMONSTER_3_IMG_PATH      = "Resources/monster3.png"; //Monster image path
 
     static iEMPTY_ID            = 0;	                    //Constant - ID of empty cells type
     static iEMPTY_PERCENT       = 0;	                    //Constant - percentage of empty cells thrown on the board
@@ -52,9 +47,6 @@ class Config
 //The class that represents game board configuration
 class BoardConfig
 {
-
-    #_rLIMIT;
-
     //#region Properties----------------------------------------------------
 
     //Board speed
