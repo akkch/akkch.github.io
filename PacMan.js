@@ -6,8 +6,23 @@ class PacMan extends Entity
     static #_oPacManConfig; //Pac man configuration object
     #_rCurrentAngleDelta;   //Pac Man's current mouth opening/closing angle
     #_bOpenMouth;           //Status of Pac Man's mouth position(true/false - openning/closing)
+    #_bBlinkFlag = false;
+    #_bBlinkToggle = false;
+    #_iBlinkNum = 100;
+    #_bBlinkCount = 0;
+    #_iScore = 0;
 
     //#endregion //Fields
+
+    get BlinkFlag()
+    {
+        return this.#_bBlinkFlag;
+    }
+
+    set BlinkFlag(value)
+    {
+        this.#_bBlinkFlag = value;
+    }
 
     //#region Constructors--------------------------------------------------
 
@@ -48,7 +63,23 @@ class PacMan extends Entity
     //  -   None
     MoveUp()
     {
-        super._moveUp();
+        var oData = false;
+        var i;
+        var j;
+        
+        oData = super._moveUp();
+
+        if(this.Center_Y - Entity._oBoard.arrBoardCells[oData.i][oData.j].rCenter_Y <= 8 && Entity._oBoard.arrBoardCells[oData.i][oData.j].bEaten == false)
+        {
+            Entity._oBoard.arrBoardCells[oData.i][oData.j].bEaten = true;
+            this.#_iScore += Entity._oBoard.arrBoardCells[oData.i][oData.j].iScore
+            
+            if(Entity._oBoard.arrBoardCells[oData.i][oData.j].iScore < 0)
+            {
+                this.#_bBlinkFlag = true;
+                this.#_bBlinkCount = 0;
+            }
+        }
     }
 
     //Moves a Pac Man down
@@ -58,7 +89,21 @@ class PacMan extends Entity
     //  -   None
     MoveDown()
     {
-        super._moveDown();
+        var oData = false;
+        
+        oData = super._moveDown();
+
+        if(Entity._oBoard.arrBoardCells[oData.i][oData.j].rCenter_Y - this.Center_Y <= 8 && Entity._oBoard.arrBoardCells[oData.i][oData.j].bEaten == false)
+        {
+            Entity._oBoard.arrBoardCells[oData.i][oData.j].bEaten = true;
+            this.#_iScore += Entity._oBoard.arrBoardCells[oData.i][oData.j].iScore
+            
+            if(Entity._oBoard.arrBoardCells[oData.i][oData.j].iScore < 0)
+            {
+                this.#_bBlinkFlag = true;
+                this.#_bBlinkCount = 0;
+            }
+        }
     }
 
     //Moves a Pac Man right
@@ -68,7 +113,22 @@ class PacMan extends Entity
     //  -   None
     MoveRight()
     {
-        super._moveRight();
+        var oData = false;
+        
+        oData = super._moveRight();
+
+        if(Entity._oBoard.arrBoardCells[oData.i][oData.j].rCenter_X - this.Center_X <= 8 && Entity._oBoard.arrBoardCells[oData.i][oData.j].bEaten == false)
+        {
+            Entity._oBoard.arrBoardCells[oData.i][oData.j].bEaten = true;
+            this.#_iScore += Entity._oBoard.arrBoardCells[oData.i][oData.j].iScore
+            console.log(this.#_iScore);
+
+            if(Entity._oBoard.arrBoardCells[oData.i][oData.j].iScore < 0)
+            {
+                this.#_bBlinkFlag = true;
+                this.#_bBlinkCount = 0;
+            }
+        }
     }
 
     //Moves a Pac Man left
@@ -78,7 +138,21 @@ class PacMan extends Entity
     //  -   None
     MoveLeft()
     {
-        super._moveLeft();
+        var oData = false;
+        
+        oData = super._moveLeft();
+
+        if(this.Center_X - Entity._oBoard.arrBoardCells[oData.i][oData.j].rCenter_X <= 8 && Entity._oBoard.arrBoardCells[oData.i][oData.j].bEaten == false)
+        {
+            Entity._oBoard.arrBoardCells[oData.i][oData.j].bEaten = true;
+            this.#_iScore += Entity._oBoard.arrBoardCells[oData.i][oData.j].iScore
+
+            if(Entity._oBoard.arrBoardCells[oData.i][oData.j].iScore < 0)
+            {
+                this.#_bBlinkFlag = true;
+                this.#_bBlinkCount = 0;
+            }
+        }
     }
 
     //On tick event handler
@@ -131,7 +205,38 @@ class PacMan extends Entity
     //  -   None
     #draw()
     {
-        this._clearEntity();
+        if(!this.#_bBlinkFlag)
+        {
+            this._clearEntity();
+            this.#drawPacMan();
+        }
+        else
+        {
+            if(this.#_bBlinkFlag && !this.#_bBlinkToggle)
+            {
+                
+                this._clearEntity();
+                if(this.#_bBlinkFlag)
+                {
+                    this.#_bBlinkToggle = true;
+                }
+            }
+            else
+            {
+                this.#drawPacMan();
+
+                if(this.#_bBlinkFlag)
+                {
+                    this.#_bBlinkToggle = false;
+                    this.#_bBlinkCount++;
+                    this.#_bBlinkFlag = this.#_bBlinkCount <= this.#_iBlinkNum;
+                }
+            }
+        }
+    }
+
+    #drawPacMan()
+    {
         switch(this._iCurrentDirection)
         {
             case Direction.Up:
@@ -167,8 +272,19 @@ class PacMan extends Entity
     //  -   None
     #drawBody(rStartAngle, rEndAngle,bFirstCounterClockwise = false,bSecondCounterClockwise = false)
     {
-        this.#drawCircle(this.Center_X,this.Center_Y,PacMan.#_oPacManConfig.BodyRadius,-(rStartAngle),-(rEndAngle),bFirstCounterClockwise,PacMan.#_oPacManConfig.BodyColor);
-        this.#drawCircle(this.Center_X,this.Center_Y,PacMan.#_oPacManConfig.BodyRadius,rStartAngle,rEndAngle,bSecondCounterClockwise,PacMan.#_oPacManConfig.BodyColor);
+        var sColor;
+
+        if(!this.#_bBlinkFlag)
+        {
+            sColor = PacMan.#_oPacManConfig.BodyColor
+        }
+        else
+        {
+            sColor = PacMan.#_oPacManConfig.BodyBlinkColor
+        }
+
+        this.#drawCircle(this.Center_X,this.Center_Y,PacMan.#_oPacManConfig.BodyRadius,-(rStartAngle),-(rEndAngle),bFirstCounterClockwise,sColor);
+        this.#drawCircle(this.Center_X,this.Center_Y,PacMan.#_oPacManConfig.BodyRadius,rStartAngle,rEndAngle,bSecondCounterClockwise,sColor);
         this.#setAngle();
     }
 

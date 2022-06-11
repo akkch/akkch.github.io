@@ -1,0 +1,177 @@
+/*Game container - needed in order to position the playing field*/
+#container
+{
+    position: relative;
+    margin: 0 auto;
+    height:1000px;
+    width: 1300px;
+    background-color: rgb(237, 237, 237);
+	overflow:visible;
+}
+
+/*Game header definition*/
+#GameHeader
+{
+    margin: 0 auto;
+    position: relative;
+    height:100px;
+    background-color: rgb(40,40,40);
+}
+
+/*Game board positioning*/
+#GameBoard
+{
+    margin: 0 auto;
+    position: relative;
+    top: 35%;
+    -ms-transform: translateY(-35%);
+    transform: translateY(-35%);
+}
+
+/*Player 1 field positioning*/
+#Player1Field
+{
+    float: left;
+}
+
+/*Player 2 field positioning*/
+#Player2Field
+{
+    float: right;
+}
+
+/*Board cell definition*/
+.Cell
+{
+    position: absolute;
+    height: 80px;
+    width: 80px;
+    border-color:rgb(40,40,40);
+    border-width: 4px;
+    border-style:solid;
+}
+
+/*X/O definition*/
+.X,.O
+{
+    text-align: center;
+    font-size: 80px;
+    line-height: 80px;
+    font-family: monospace;
+}
+
+/*Change text color*/
+.whiteColor
+{
+    color: rgb(237, 237, 237);
+}
+
+/*Hide(Paint to board color) cell top border(For board corners handling)*/
+.top
+{
+    border-top-color: rgb(237, 237, 237);
+}
+
+/*Hide(Paint to board color) cell bottom border(For board corners handling)*/
+.bottom
+{
+    border-bottom-color: rgb(237, 237, 237);
+}
+
+/*Hide(Paint to board color) cell left border(For board corners handling)*/
+.left
+{
+    border-left-color: rgb(237, 237, 237);
+}
+
+/*Hide(Paint to board color) cell right border(For board corners handling)*/
+.right
+{
+    border-right-color: rgb(237, 237, 237);
+}
+
+/*Player field definition(Before expanding)*/
+.PlayerField
+{
+    width: 200px;
+    height: 0px;
+    background-color:rgb(40,40,40);
+    border-color: rgb(237, 237, 237);
+    border-width: 5px;
+    border-style:solid;
+    bottom: 0px;
+    transition: 0.8s;
+}
+
+/*Player field expanding*/
+.PlayerFieldStarted
+{
+    height: 250px;
+}
+
+/*Player field headers definition*/
+.PlayerField h1
+{
+    margin: 20px auto;
+    font-size: 24px;
+    width: auto;
+}
+
+/*Winner cells and player field definition*/
+.Winner
+{
+    background-color:beige;
+    animation: blinker 1s linear infinite;
+    color: green;
+}
+
+/*Blink handling - for winner highlighting*/
+@keyframes blinker {
+    50% {
+      opacity: 0;
+    }
+  }
+  .blink-one {
+    animation: blinker-one 1s linear infinite;
+  }
+  @keyframes blinker-one {
+    0% {
+      opacity: 0;
+    }
+  }
+  .blink-two {
+    animation: blinker-two 1.4s linear infinite;
+  }
+  @keyframes blinker-two {
+    100% {
+      opacity: 0;
+    }
+}
+
+/*Current time filed definitions*/
+#CurrentTime
+{
+    margin: 5px 5px 0px  5px;
+    border-style: groove;
+    border-color: rgb(40,40,40);
+    border-width: 5px;
+    text-align: center;
+    color: rgb(40,40,40);
+    font-size: 36px;
+    font-family: monospace;
+    transition: 0.8s;
+}
+
+/*CPlayer turn filed definitions*/
+#PlayerTurn
+{
+    margin: 5px 5px 0px  5px;
+    border-style: groove;
+    border-color: rgb(40,40,40);
+    border-width: 1px;
+    text-align: center;
+    color: rgb(40,40,40);
+    font-size: 24px;
+    font-family: monospace;
+    transition: 0.8s;
+}
