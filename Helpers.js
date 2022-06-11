@@ -3,6 +3,8 @@ class Entity
 {
     //#region Fields--------------------------------------------------------
 
+    static _oBoard;    //Link to game board
+
     _iBodyWidth;       //Entity width
     _iBodyHeight;      //Entity height
 
@@ -41,9 +43,10 @@ class Entity
     //  -   iBodyHeight - Entity height
     //Return:
     //  -   None
-    constructor(oCanvas,rCenter_X, rCenter_Y, iBodyWidth, iBodyHeight)
+    constructor(oCanvas,oBoard,rCenter_X, rCenter_Y, iBodyWidth, iBodyHeight)
     {
         this._oCanvas = oCanvas;
+        Entity._oBoard = oBoard;
         this._oContext = this._oCanvas.getContext('2d');
         this.#_rCenter_X = rCenter_X;
         this.#_rCenter_Y = rCenter_Y;
@@ -62,46 +65,78 @@ class Entity
 
     //Moves a Entity up
     //Arguments:
-    //  -   iSpeed      - Board speed
+    //  -   rSpeedRatio - The ratio of the speed of monsters relative to the speed of the board
     //Return:
     //  -   None
-    _moveUp(iSpeed)
+    _moveUp(rSpeedRatio = 1)
     {
-        this.#setY(this.Center_Y - iSpeed);
-        this._iCurrentDirection = Direction.Up;
+        var bIsMoved = false;
+
+        if(this.Center_Y>Entity._oBoard.TopEntityLimit)
+        {
+            this.#setY(this.Center_Y - Entity._oBoard.BoardSpeed*rSpeedRatio);
+            this._iCurrentDirection = Direction.Up;
+            bIsMoved = true;
+        }
+            
+        return bIsMoved;
     }
 
     //Moves a Entity down
     //Arguments:
-    //  -   iSpeed      - Board speed
+    //  -   rSpeedRatio - The ratio of the speed of monsters relative to the speed of the board
     //Return:
     //  -   None
-    _moveDown(iSpeed)
+    _moveDown(rSpeedRatio = 1)
     {
-        this.#setY(this.Center_Y + iSpeed);
-        this._iCurrentDirection = Direction.Down;
+        var bIsMoved = false;
+        
+        if(this.Center_Y<Entity._oBoard.DownEntityLimit)
+        {
+            this.#setY(this.Center_Y + Entity._oBoard.BoardSpeed*rSpeedRatio);
+            this._iCurrentDirection = Direction.Down;
+            bIsMoved = true;
+        }
+            
+        return bIsMoved;
     }
 
     //Moves a Entity right
     //Arguments:
-    //  -   iSpeed      - Board speed
+    //  -   rSpeedRatio - The ratio of the speed of monsters relative to the speed of the board
     //Return:
     //  -   None
-    _moveRight(iSpeed)
+    _moveRight(rSpeedRatio = 1)
     {
-        this.#setX(this.#_rCenter_X + iSpeed);
-        this._iCurrentDirection = Direction.Right;
+        var bIsMoved = false;
+        
+        if(this.Center_X<Entity._oBoard.RightEntityLimit)
+        {
+            this.#setX(this.#_rCenter_X + Entity._oBoard.BoardSpeed*rSpeedRatio);
+            this._iCurrentDirection = Direction.Right;
+            bIsMoved = true;
+        }
+            
+        return bIsMoved;
     }
 
     //Moves a Entity left
     //Arguments:
-    //  -   iSpeed      - Board speed
+    //  -   rSpeedRatio - The ratio of the speed of monsters relative to the speed of the board
     //Return:
     //  -   None
-    _moveLeft(iSpeed)
+    _moveLeft(rSpeedRatio = 1)
     {
-        this.#setX(this.#_rCenter_X - iSpeed);
-        this._iCurrentDirection = Direction.Left;
+        var bIsMoved = false;
+        
+        if(this.Center_X>Entity._oBoard.LeftEntityLimit)
+        {
+            this.#setX(this.#_rCenter_X - Entity._oBoard.BoardSpeed*rSpeedRatio);
+            this._iCurrentDirection = Direction.Left;
+            bIsMoved = true;
+        }
+            
+        return bIsMoved;
     }
 
     //Clear the Entity from current position

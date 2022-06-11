@@ -21,13 +21,13 @@ class Monsters
     {
         Monsters.#init(oBoard, oMonstConf)
 
-        var MosterCanvas = document.getElementById(Monsters.#_oMonstConf.CanvasName);
+        var oMosterCanvas = document.getElementById(Monsters.#_oMonstConf.CanvasName);
         var y;
 
         for(let i=0;i<Monsters.#_oMonstConf.ArrImagePath.length;i++)
         {
             y = Monsters.#setInitPosition(i,oBoard, Monsters.#_iFirstMonsterInitialPos_Y);
-            new Monster(oBoard,MosterCanvas,Monsters.#_iFirstMonsterInitialPos_X,  y,Monsters.#_oMonstConf.ArrImagePath[i],Monsters.#_oMonstConf.ImageSize);
+            new Monster(oBoard,oMosterCanvas,Monsters.#_iFirstMonsterInitialPos_X,  y,Monsters.#_oMonstConf.ArrImagePath[i],Monsters.#_oMonstConf.ImageSize,Monsters.#_oMonstConf.SpeedRatio);
         }
     }
     
@@ -69,11 +69,11 @@ class Monster extends Entity
     //#region Fields--------------------------------------------------------
 
     static #_arrMonsters = [];  //List of monster instances
-    static #_oBoard;            //Link to game board
     #_sImagePath;               //Path to Monster image
     #_oImg;		                //Link to image
     #_iImgSize;                 //Image size in pixels
     #_bMoved;                   //Moving indication flag
+    #_rSpeedRatio;              //The ratio of the speed of monsters relative to the speed of the board
 
     //#endregion //Fields
 
@@ -87,14 +87,16 @@ class Monster extends Entity
     //  -   rCenter_Y   - The y-coordinate of the center of the Pac Man
     //  -   sImagePath  - Path to Monster image
     //  -   iImgSize    - Size of Monster image(In px)
+    //  -   rSpeedRatio - The ratio of the speed of monsters relative to the speed of the board
     //Return:
     //  -   None
-    constructor(oBoard, oCanvas, rCenter_X, rCenter_Y, sImagePath, iImgSize)
+    constructor(oBoard, oCanvas, rCenter_X, rCenter_Y, sImagePath, iImgSize, rSpeedRatio)
     {
-        super(oCanvas,rCenter_X,rCenter_Y,iImgSize,iImgSize);
+        super(oCanvas,oBoard,rCenter_X,rCenter_Y,iImgSize,iImgSize);
         
         this.#_sImagePath = sImagePath;
         this.#_iImgSize = iImgSize;
+        this.#_rSpeedRatio = rSpeedRatio;
 
         this.#_oImg = new Image();
         this.#_oImg.src = this.#_sImagePath;
@@ -102,10 +104,9 @@ class Monster extends Entity
 
         this.#_bMoved = false;
 
-        Monster.#_oBoard = oBoard;
         Monster.#_arrMonsters.push(this);
 
-        new Timer(this,Monster.#_oBoard.BoardSpeed,-1);
+        new Timer(this,Entity._oBoard.BoardSpeed,-1);
     }
 
     //#endregion //Constructor
@@ -122,19 +123,19 @@ class Monster extends Entity
         switch(this._iCurrentDirection)
         {
             case Direction.Up:
-                this.#_bMoved = this.MoveUp(Monster.#_oBoard,Monster.#_arrMonsters);
+                this.#_bMoved = this.MoveUp(Entity._oBoard,Monster.#_arrMonsters);
             break;
     
             case Direction.Down:
-                this.#_bMoved = this.MoveDown(Monster.#_oBoard,Monster.#_arrMonsters);
+                this.#_bMoved = this.MoveDown(Entity._oBoard,Monster.#_arrMonsters);
             break;
     
             case Direction.Right:
-                this.#_bMoved = this.MoveRight(Monster.#_oBoard,Monster.#_arrMonsters);
+                this.#_bMoved = this.MoveRight(Entity._oBoard,Monster.#_arrMonsters);
             break;
     
             case Direction.Left:
-                this.#_bMoved = this.MoveLeft(Monster.#_oBoard,Monster.#_arrMonsters);
+                this.#_bMoved = this.MoveLeft(Entity._oBoard,Monster.#_arrMonsters);
             break;
     
             default:
@@ -153,7 +154,7 @@ class Monster extends Entity
         }
     }
     
-    //Moves a Entity up
+    //Moves a Monster up
     //Arguments:
     //  -   oBoard      - Link to game board
     //  -   arrEntities - List of entities participating in the game
@@ -162,16 +163,15 @@ class Monster extends Entity
     MoveUp(oBoard = -1, arrEntities = -1)
     {
         var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsUpDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y>oBoard.TopEntityLimit)
+        if(oBoard != -1 && arrEntities != -1 && this.#IsUpDirectionFree(arrEntities,oBoard.BoardSpeed))
         {
-            super._moveUp(oBoard.BoardSpeed);
-            bIsMoved = true;
+            bIsMoved = super._moveUp(this.#_rSpeedRatio);
         }
 
         return bIsMoved;
     }
 
-    //Moves a Entity down
+    //Moves a Monster down
     //Arguments:
     //  -   oBoard      - Link to game board
     //  -   arrEntities - List of entities participating in the game
@@ -180,16 +180,15 @@ class Monster extends Entity
     MoveDown(oBoard = -1, arrEntities = -1)
     {
         var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsDownDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y<oBoard.DownEntityLimit)
+        if(oBoard != -1 && arrEntities != -1 && this.#IsDownDirectionFree(arrEntities,oBoard.BoardSpeed))
         {
-            super._moveDown(oBoard.BoardSpeed);
-            bIsMoved = true;
+            bIsMoved = super._moveDown(this.#_rSpeedRatio);
         }
 
         return bIsMoved
     }
 
-    //Moves a Entity right
+    //Moves a Monster right
     //Arguments:
     //  -   oBoard      - Link to game board
     //  -   arrEntities - List of entities participating in the game
@@ -198,16 +197,15 @@ class Monster extends Entity
     MoveRight(oBoard = -1, arrEntities = -1)
     {
         var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsRightDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X<oBoard.RightEntityLimit)
+        if(oBoard != -1 && arrEntities != -1 && this.#IsRightDirectionFree(arrEntities,oBoard.BoardSpeed))
         {
-            super._moveRight(oBoard.BoardSpeed);
-            bIsMoved = true;
+            bIsMoved = super._moveRight(this.#_rSpeedRatio);
         }
 
         return bIsMoved
     }
 
-    //Moves a Entity left
+    //Moves a Monster left
     //Arguments:
     //  -   oBoard      - Link to game board
     //  -   arrEntities - List of entities participating in the game
@@ -216,10 +214,9 @@ class Monster extends Entity
     MoveLeft(oBoard = -1, arrEntities = -1)
     {
         var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsLeftDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X>oBoard.LeftEntityLimit)
+        if(oBoard != -1 && arrEntities != -1 && this.#IsLeftDirectionFree(arrEntities,oBoard.BoardSpeed))
         {
-            super._moveLeft(oBoard.BoardSpeed);
-            bIsMoved = true;
+            bIsMoved = super._moveLeft(this.#_rSpeedRatio);
         }
 
         return bIsMoved

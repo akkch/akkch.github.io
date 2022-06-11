@@ -10,6 +10,7 @@ var monsters = [];
 
 
 
+var oPacManConf;
 var rPacManStartPos_X = 40;
 var rPacManStartPos_Y = 40;
 var rPacManEndPos_X = 760;
@@ -30,55 +31,11 @@ window.onload = function()
     oMonstConf = new MonstersConfig();
     Monsters.Run(oBoard,oMonstConf)
 
-    // setPacMan();
-    // window.setInterval(start, 10);
+
+    oPacManConf = new PacManConfig();
+    pacMan = new PacMan(oBoard,oPacManConf);
 
  }
-
-function setPacMan()
-{
-    var canvas = document.getElementById("BoardCanvas");
-    pacMan = new PacMan(canvas,rPacManStartPos_X, rPacManStartPos_Y);
-
-    document.addEventListener('keydown', (event) => {
-    var name = event.key;
-
-    switch(name)
-    {
-        case "ArrowUp":
-            if(pacMan.Center_Y>rPacManStartPos_Y)
-                pacMan.MoveUp(speed);
-        break;
-
-        case "ArrowDown":
-            if(pacMan.Center_Y<rPacManEndPos_Y)
-                pacMan.MoveDown(speed);
-        break;
-
-        case "ArrowLeft":
-            if(pacMan.Center_X>rPacManStartPos_X)
-                pacMan.MoveLeft(speed);
-        break;
-
-        case "ArrowRight":
-            if(pacMan.Center_X<rPacManEndPos_X)
-                pacMan.MoveRight(speed);
-        break;
-
-        default:
-            alert("error : " + name);
-            currentDircetion = DIR_RIGHT;
-            break
-    };
-    }, false);
-}
-
-
-function start()
-{
-    coords.innerHTML = "X : " + pacMan.X + ", Y : " + pacMan.Y;
-    pacMan.Draw();
-}
 
 function DrawCell()
 {

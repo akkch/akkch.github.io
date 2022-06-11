@@ -12,7 +12,7 @@ class Board
     #_iTopEntityLimit;  //Top border of the board
     #_iDownEntityLimit; //Down border of the board
 
-    #_oBoardConfig;   //Board configuration
+    #_oBoardConfig;   //Board configuration object
     #_iBoardCellSize; //Board cell size
 
     get BoardWidth()

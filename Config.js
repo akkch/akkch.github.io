@@ -4,15 +4,17 @@ class Config
     //#region Fields--------------------------------------------------------
 
     static rGAME_ENTITY_SIZE        = 64;                       //Size of entity images
-    static rBOARD_SPEED             = 5;                        //Board speed
+    static rBOARD_SPEED             = 10;                       //Board speed
     static sBOARD_CANVAS_NAME       = "BoardCanvas";            //Board canvas name
 
+    static sPAC_MAN_CANVAS_NAME     = "BoardCanvas";            //Pac man canvas name
     static rPAC_MAN_EYE_RADIUS      = 5;                        //Pac man eye radius
     static sPAC_MAN_BODY_COLOR      = "mediumslateblue";        //Pac man body color
     static sPAC_MAN_EYE_COLOR       = "black";                  //Pac man eye color
-    static rPAC_MAN_ANGLE_DELTA     = 0.05;                     //Delta change in the angle of opening/closing of the mouth
+    static rPAC_MAN_ANGLE_DELTA     = 0.03;                     //Delta change in the angle of opening/closing of the mouth
     
     static sMONSTERS_CANVAS_NAME    = "MonstersCanvas";         //Monsters canvas name
+    static sMONSTERS_SPEED_RATIO    = 0.3;                      //The ratio of the speed of monsters relative to the speed of the board
     static sMONSTER_0_IMG_PATH      = "Resources/monster0.png"; //Monster image path
     static sMONSTER_1_IMG_PATH      = "Resources/monster1.png"; //Monster image path
     static sMONSTER_2_IMG_PATH      = "Resources/monster2.png"; //Monster image path
@@ -77,6 +79,12 @@ class PacManConfig
     #_rPAC_MAN_BODY_RADIUS = 32;                       //Calculated in constructor constant - Pac man body radius
 
     //#region Properties----------------------------------------------------
+
+    //Pac Man canvas name
+    get CanvasName()
+    {
+        return Config.sPAC_MAN_CANVAS_NAME;
+    }
 
     //Pac man body radius
     get BodyRadius()
@@ -152,6 +160,11 @@ class MonstersConfig
     get ImageSize()
     {
         return this.#_iImageSize;
+    }
+    //The ratio of the speed of monsters relative to the speed of the board
+    get SpeedRatio()
+    {
+        return Config.sMONSTERS_SPEED_RATIO;
     }
     
     //#endregion //Properties

@@ -3,15 +3,11 @@ class PacMan extends Entity
 {
     //#region Fields--------------------------------------------------------
 
-    static #_oBoard;        //Link to game board
     static #_oPacManConfig; //Pac man configuration object
     #_rCurrentAngleDelta;   //Pac Man's current mouth opening/closing angle
     #_bOpenMouth;           //Status of Pac Man's mouth position(true/false - openning/closing)
 
     //#endregion //Fields
-
-    //#region Properties----------------------------------------------------
-    //#endregion //Properties
 
     //#region Constructors--------------------------------------------------
 
@@ -19,98 +15,70 @@ class PacMan extends Entity
     //Arguments:
     //  -   oBoard          - Link to instance of game board
     //  -   oPacManConfig   - Pac man configuration object
-    //  -   oCanvas         - Link to instance of canvas object
     //Return:
     //  -   None
-    constructor(oBoard, oPacManConfig, oCanvas)
+    constructor(oBoard, oPacManConfig)
     {
-        PacMan.#_oBoard = oBoard;
+        var oPacManCanvas = document.getElementById(oPacManConfig.CanvasName);
+
         PacMan.#_oPacManConfig = oPacManConfig;
 
         var iPacManDiametr = PacMan.#_oPacManConfig.BodyRadius*2;
 
-        super(oCanvas,oBoard.RightEntityLimit,oBoard.DownEntityLimit,iPacManDiametr,iPacManDiametr);
+        super(oPacManCanvas,oBoard,oBoard.RightEntityLimit,oBoard.DownEntityLimit,iPacManDiametr,iPacManDiametr);
+
+        this.#_rCurrentAngleDelta = 0;
+
+        document.addEventListener('keydown',(event) => 
+        {
+            PacMan.OnKeyPressed(event,this)
+        });
         
+        new Timer(this,Entity._oBoard.BoardSpeed,-1);
     }
 
     //#endregion //Constructor
 
     //#region Public Methods------------------------------------------------
 
-    //Moves a Entity up
+    //Moves a Pac Man up
     //Arguments:
-    //  -   oBoard      - Link to game board
-    //  -   arrEntities - List of entities participating in the game
+    //  -   None
     //Return:
-    //  -   true/false - Was moved/not
-    MoveUp(oBoard = -1, arrEntities = -1)
+    //  -   None
+    MoveUp()
     {
-        var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsUpDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y>oBoard.TopEntityLimit)
-        {
-            this.#setY(this.Center_Y - oBoard.BoardSpeed);
-            this._iCurrentDirection = Direction.Up;
-            bIsMoved = true;
-        }
-
-        return bIsMoved;
+        super._moveUp();
     }
 
-    //Moves a Entity down
+    //Moves a Pac Man down
     //Arguments:
-    //  -   oBoard      - Link to game board
-    //  -   arrEntities - List of entities participating in the game
+    //  -   None
     //Return:
-    //  -   true/false - Was moved/not
-    MoveDown(oBoard = -1, arrEntities = -1)
+    //  -   None
+    MoveDown()
     {
-        var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsDownDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y<oBoard.DownEntityLimit)
-        {
-            this.#setY(this.Center_Y + oBoard.BoardSpeed);
-        this._iCurrentDirection = Direction.Down;
-            bIsMoved = true;
-        }
-
-        return bIsMoved
+        super._moveDown();
     }
 
-    //Moves a Entity right
+    //Moves a Pac Man right
     //Arguments:
-    //  -   oBoard      - Link to game board
-    //  -   arrEntities - List of entities participating in the game
+    //  -   None
     //Return:
-    //  -   true/false - Was moved/not
-    MoveRight(oBoard = -1, arrEntities = -1)
+    //  -   None
+    MoveRight()
     {
-        var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsRightDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X<oBoard.RightEntityLimit)
-        {
-            this.#setX(this.#_rCenter_X + oBoard.BoardSpeed);
-            this._iCurrentDirection = Direction.Right;
-            bIsMoved = true;
-        }
-
-        return bIsMoved
+        super._moveRight();
     }
 
-    //Moves a Entity left
+    //Moves a Pac Man left
     //Arguments:
-    //  -   oBoard      - Link to game board
-    //  -   arrEntities - List of entities participating in the game
+    //  -   None
     //Return:
-    //  -   true/false - Was moved/not
-    MoveLeft(oBoard = -1, arrEntities = -1)
+    //  -   None
+    MoveLeft()
     {
-        var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsLeftDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X>oBoard.LeftEntityLimit)
-        {
-            this.#setX(this.#_rCenter_X - oBoard.BoardSpeed);
-            this._iCurrentDirection = Direction.Left;
-            bIsMoved = true;
-        }
-
-        return bIsMoved
+        super._moveLeft();
     }
 
     //On tick event handler
@@ -123,29 +91,30 @@ class PacMan extends Entity
         this.#draw();
     }
 
-
-    OnKeyPressed(event)
+    //Key presssed event handler event handler
+    //Arguments:
+    //  -   event  - Event data
+    //  -   pacman - Link to current instance
+    //Return:
+    //  -   None
+    static OnKeyPressed(event, pacman)
     {
         switch(Direction.GetKeyDirByName(event.key))
         {
-            case Direction.Down:
-                if(pacMan.Center_Y>rPacManStartPos_Y)
-                    pacMan.MoveUp(speed);
+            case Direction.Up:
+                pacman.MoveUp();
             break;
 
             case Direction.Down:
-                if(pacMan.Center_Y<rPacManEndPos_Y)
-                    pacMan.MoveDown(speed);
+                pacman.MoveDown();
             break;
 
-            case Direction.Down:
-                if(pacMan.Center_X>rPacManStartPos_X)
-                    pacMan.MoveLeft(speed);
+            case Direction.Left:
+                pacman.MoveLeft();
             break;
 
-            case Direction.Down:
-                if(pacMan.Center_X<rPacManEndPos_X)
-                    pacMan.MoveRight(speed);
+            case Direction.Right:
+                pacman.MoveRight();
             break;
 
         };
@@ -167,19 +136,19 @@ class PacMan extends Entity
         {
             case Direction.Up:
                 this.#drawBody((Math.PI/4+Math.PI/4)-Math.PI*this.#_rCurrentAngleDelta,(Math.PI+Math.PI/4+Math.PI/4) - Math.PI*this.#_rCurrentAngleDelta);
-                this.#drawEye(this.Center_X - this.#_rBodyRadius/2,this.Center_Y - this.#_rBodyRadius/2.5);
+                this.#drawEye(this.Center_X - PacMan.#_oPacManConfig.BodyRadius/2,this.Center_Y - PacMan.#_oPacManConfig.BodyRadius/2.5);
             break;
             case Direction.Down:
                 this.#drawBody(Math.PI*0.5 + Math.PI - Math.PI*this.#_rCurrentAngleDelta,Math.PI*0.5 - Math.PI*this.#_rCurrentAngleDelta);
-                this.#drawEye(this.Center_X - this.#_rBodyRadius/2,this.Center_Y + this.#_rBodyRadius/2.5);
+                this.#drawEye(this.Center_X - PacMan.#_oPacManConfig.BodyRadius/2,this.Center_Y + PacMan.#_oPacManConfig.BodyRadius/2.5);
             break;
             case Direction.Right:
                 this.#drawBody(Math.PI*this.#_rCurrentAngleDelta,Math.PI + Math.PI*this.#_rCurrentAngleDelta,true);
-                this.#drawEye(this.Center_X + this.#_rBodyRadius/2.5,this.Center_Y - this.#_rBodyRadius/2);
+                this.#drawEye(this.Center_X + PacMan.#_oPacManConfig.BodyRadius/2.5,this.Center_Y - PacMan.#_oPacManConfig.BodyRadius/2);
             break;
             case Direction.Left:
                 this.#drawBody(Math.PI + Math.PI*this.#_rCurrentAngleDelta,Math.PI*this.#_rCurrentAngleDelta,true);
-                this.#drawEye(this.Center_X - this.#_rBodyRadius/2.5,this.Center_Y - this.#_rBodyRadius/2);
+                this.#drawEye(this.Center_X - PacMan.#_oPacManConfig.BodyRadius/2.5,this.Center_Y - PacMan.#_oPacManConfig.BodyRadius/2);
             break;
 
             default:
@@ -198,8 +167,8 @@ class PacMan extends Entity
     //  -   None
     #drawBody(rStartAngle, rEndAngle,bFirstCounterClockwise = false,bSecondCounterClockwise = false)
     {
-        this.#drawCircle(this.Center_X,this.Center_Y,this.#_rBodyRadius,-(rStartAngle),-(rEndAngle),bFirstCounterClockwise,this.#_sBodyColor);
-        this.#drawCircle(this.Center_X,this.Center_Y,this.#_rBodyRadius,rStartAngle,rEndAngle,bSecondCounterClockwise,this.#_sBodyColor);
+        this.#drawCircle(this.Center_X,this.Center_Y,PacMan.#_oPacManConfig.BodyRadius,-(rStartAngle),-(rEndAngle),bFirstCounterClockwise,PacMan.#_oPacManConfig.BodyColor);
+        this.#drawCircle(this.Center_X,this.Center_Y,PacMan.#_oPacManConfig.BodyRadius,rStartAngle,rEndAngle,bSecondCounterClockwise,PacMan.#_oPacManConfig.BodyColor);
         this.#setAngle();
     }
 
@@ -211,7 +180,7 @@ class PacMan extends Entity
     //  -   None
     #drawEye(rCenter_X,rCenter_Y)
     {
-        this.#drawCircle(rCenter_X,rCenter_Y,this.#_rEyeRadius,0,Math.PI*2,false,this.#_sEyeColor);
+        this.#drawCircle(rCenter_X,rCenter_Y,PacMan.#_oPacManConfig.EyeRadius,0,Math.PI*2,false,PacMan.#_oPacManConfig.EyeColor);
     }
 
     //Draws a circle with a filled body
@@ -243,14 +212,14 @@ class PacMan extends Entity
         if(this.#_bOpenMouth)
         {
             if(this.#_rCurrentAngleDelta<0.2)
-                this.#_rCurrentAngleDelta = this.#_rCurrentAngleDelta + this.#_rAngleDelta;
+                this.#_rCurrentAngleDelta = this.#_rCurrentAngleDelta + PacMan.#_oPacManConfig.AngleDelta;
             else
                 this.#_bOpenMouth = false;
         }
         else
         {
             if(this.#_rCurrentAngleDelta>0.05)
-                this.#_rCurrentAngleDelta =this.#_rCurrentAngleDelta - this.#_rAngleDelta;
+                this.#_rCurrentAngleDelta =this.#_rCurrentAngleDelta - PacMan.#_oPacManConfig.AngleDelta;
             else
                 this.#_bOpenMouth = true;
         }
