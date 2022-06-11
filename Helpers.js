@@ -229,12 +229,12 @@ class CellsContent
     //#region Public Methods------------------------------------------------
 
     //Filling an Array with Possible Types
-    static SetConfig(oCellTypeConfig)
+    static SetConfig(oCellTypeConfig, iCellsAmount)
     {
         for(let i=0;i<oCellTypeConfig.Ids.length;i++)
         {
-            CellsContent.arrTypes[i] = new Type(oCellTypeConfig.Ids[i], oCellTypeConfig.Scores[i], oCellTypeConfig.ImgPathes[i], oCellTypeConfig.iTypeImgSize);
-            CellsContent.arrRemainTypes[i] = oCellTypeConfig.iCellsAmount*oCellTypeConfig.Ratios[i];
+            CellsContent.arrTypes[i] = new Type(oCellTypeConfig.Ids[i], oCellTypeConfig.Scores[i], oCellTypeConfig.ImgPathes[i], oCellTypeConfig.TypeImgSize);
+            CellsContent.arrRemainTypes[i] = iCellsAmount*oCellTypeConfig.Ratios[i];
         }
     }
 

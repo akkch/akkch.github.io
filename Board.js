@@ -63,26 +63,31 @@ class Board
     constructor(oBoardConfig)
     {
         this.#_oCanvas  = document.getElementById(oBoardConfig.CanvasName);
+        this.#_oContext  = this.#_oCanvas.getContext('2d');;
         this.#_oBoardConfig = oBoardConfig;
         this.#_iWidth   = this.#_oCanvas.width;
 		this.#_iHeight  = this.#_oCanvas.height;
     }
     
-    Draw(iRowsNum, iColsNum)
+    Draw(iRowsNum, iColsNum, oCellTypeConfig)
     {
         this.#_iRowsNum = iRowsNum;
         this.#_iColsNum = iColsNum;
         this.#_iBoardCellSize = this.#_iWidth/this.#_iColsNum;
         this.#setLimits();
+        CellsContent.SetConfig(oCellTypeConfig, this.#_iRowsNum*this.#_iColsNum);
+        Cell.iCellSize = this.#_iBoardCellSize;
 
-    //    for(let i=1;i<=this.#_iRowsNum;i++)
-    //    {
-    //        for(let j=1;j<=this.#_iRowsNum;j++)
-    //        {
-    //             oTmpCell = new Cell(i,j);
-    //             oTmpCell.Draw(oContext);
-    //        }
-    //     }
+        var oTmpCell;
+
+       for(let i=1;i<=this.#_iRowsNum;i++)
+       {
+           for(let j=1;j<=this.#_iRowsNum;j++)
+           {
+                oTmpCell = new Cell(i,j);
+                oTmpCell.Draw(this.#_oContext);
+           }
+         }
 
     }
 

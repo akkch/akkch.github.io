@@ -211,7 +211,6 @@ class CellTypeConfig
 
     //#region Properties----------------------------------------------------
 
-
     //Size of images
     get TypeImgSize()
     {

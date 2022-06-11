@@ -26,7 +26,7 @@ window.onload = function()
 
     
     oCellTypeConfig = new CellTypeConfig();
-    oBoard.Draw(10, 10);
+    oBoard.Draw(10, 10, oCellTypeConfig);
 
     oMonstConf = new MonstersConfig();
     Monsters.Run(oBoard,oMonstConf)
