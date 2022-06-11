@@ -3,8 +3,8 @@ class Entity
 {
     //#region Fields--------------------------------------------------------
 
-    #_iBodyWidth;       //Entity width
-    #_iBodyHeight;      //Entity height
+    _iBodyWidth;       //Entity width
+    _iBodyHeight;      //Entity height
 
     #_rCenter_X;        //Point on the X-axis
     #_rCenter_Y;        //Point on the Y-axis
@@ -47,8 +47,8 @@ class Entity
         this._oContext = this._oCanvas.getContext('2d');
         this.#_rCenter_X = rCenter_X;
         this.#_rCenter_Y = rCenter_Y;
-        this.#_iBodyWidth = iBodyWidth;
-        this.#_iBodyHeight = iBodyHeight;
+        this._iBodyWidth = iBodyWidth;
+        this._iBodyHeight = iBodyHeight;
         this._iCurrentDirection = Direction.Right;
     }
 
@@ -56,250 +56,52 @@ class Entity
 
     //#region Public Methods------------------------------------------------
 
+    //#endregion //Public Methods
+
+    //#region Protected Methods------------------------------------------------
+
     //Moves a Entity up
     //Arguments:
-    //  -   oBoard      - Link to game board
-    //  -   arrEntities - List of entities participating in the game
+    //  -   iSpeed      - Board speed
     //Return:
-    //  -   true/false - Was moved/not
-    MoveUp(oBoard = -1, arrEntities = -1)
+    //  -   None
+    _moveUp(iSpeed)
     {
-        var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsUpDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y>oBoard.TopEntityLimit)
-        {
-            this.#setY(this.Center_Y - oBoard.BoardSpeed);
-            this._iCurrentDirection = Direction.Up;
-            bIsMoved = true;
-        }
-
-        return bIsMoved;
+        this.#setY(this.Center_Y - iSpeed);
+        this._iCurrentDirection = Direction.Up;
     }
 
     //Moves a Entity down
     //Arguments:
-    //  -   oBoard      - Link to game board
-    //  -   arrEntities - List of entities participating in the game
+    //  -   iSpeed      - Board speed
     //Return:
-    //  -   true/false - Was moved/not
-    MoveDown(oBoard = -1, arrEntities = -1)
+    //  -   None
+    _moveDown(iSpeed)
     {
-        var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsDownDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y<oBoard.DownEntityLimit)
-        {
-            this.#setY(this.Center_Y + oBoard.BoardSpeed);
+        this.#setY(this.Center_Y + iSpeed);
         this._iCurrentDirection = Direction.Down;
-            bIsMoved = true;
-        }
-
-        return bIsMoved
     }
 
     //Moves a Entity right
     //Arguments:
-    //  -   oBoard      - Link to game board
-    //  -   arrEntities - List of entities participating in the game
+    //  -   iSpeed      - Board speed
     //Return:
-    //  -   true/false - Was moved/not
-    MoveRight(oBoard = -1, arrEntities = -1)
+    //  -   None
+    _moveRight(iSpeed)
     {
-        var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsRightDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X<oBoard.RightEntityLimit)
-        {
-            this.#setX(this.#_rCenter_X + oBoard.BoardSpeed);
-            this._iCurrentDirection = Direction.Right;
-            bIsMoved = true;
-        }
-
-        return bIsMoved
+        this.#setX(this.#_rCenter_X + iSpeed);
+        this._iCurrentDirection = Direction.Right;
     }
 
     //Moves a Entity left
     //Arguments:
-    //  -   oBoard      - Link to game board
-    //  -   arrEntities - List of entities participating in the game
+    //  -   iSpeed      - Board speed
     //Return:
-    //  -   true/false - Was moved/not
-    MoveLeft(oBoard = -1, arrEntities = -1)
+    //  -   None
+    _moveLeft(iSpeed)
     {
-        var bIsMoved = false;
-        if(oBoard != -1 && arrEntities != -1 && this.#IsLeftDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X>oBoard.LeftEntityLimit)
-        {
-            this.#setX(this.#_rCenter_X - oBoard.BoardSpeed);
-            this._iCurrentDirection = Direction.Left;
-            bIsMoved = true;
-        }
-
-        return bIsMoved
-    }
-
-    //#endregion //Public Methods
-
-    //#region Private Methods-----------------------------------------------
-
-    //Check if an entity instance is on the same row as this instance
-    //Arguments:
-    //  -   oEntity - Requested entity instance
-    //  -   iDelta  - The distance to move the Entity from the current position
-    //Return:
-    //  -   true/false - Located on the same row/not
-    #InRow(oEntity,iDelta)
-    {
-        return (this.Center_Y-this.#_iBodyHeight/2 - iDelta) < (oEntity.Center_Y + oEntity.#_iBodyHeight/2) && (this.Center_Y+this.#_iBodyHeight/2 + iDelta) > (oEntity.Center_Y - oEntity.#_iBodyHeight/2);
-    }
-
-    //Check if an entity instance is on the same column as this instance
-    //Arguments:
-    //  -   oEntity - Requested entity instance
-    //  -   iDelta  - The distance to move the Entity from the current position
-    //Return:
-    //  -   true/false - Located on the same column/not
-    #inCol(oEntity,iDelta)
-    {
-        return ((this.Center_X-this.#_iBodyHeight/2 - iDelta) < (oEntity.Center_X + oEntity.#_iBodyHeight/2) && (this.Center_X+this.#_iBodyHeight/2 + iDelta) > (oEntity.Center_X - oEntity.#_iBodyHeight/2));
-    }
-
-    //Check if there is any entity at the top of this instance.
-    //Arguments:
-    //  -   arrEntities - List of entities for check
-    //  -   iDelta      - The distance to move the Entity from the current position
-    //Return:
-    //  -   true/false  - Direction is free/not
-    #IsUpDirectionFree(arrEntities,iDelta)
-    {
-        var bIsFree = true;
-
-        for(let i=0;i<arrEntities.length && bIsFree;i++)
-        {
-            if(!(this.#_rCenter_X == arrEntities[i].#_rCenter_X && this.#_rCenter_Y == arrEntities[i].#_rCenter_Y))
-            {
-                if(!this.#inCol(arrEntities[i],iDelta))
-                {
-                    bIsFree = true;
-                }
-                else
-                {
-                    if((this.Center_Y - this.#_iBodyHeight/2 - iDelta)  < (arrEntities[i].Center_Y + arrEntities[i].#_iBodyHeight/2) && (this.Center_Y - this.#_iBodyHeight/2 - iDelta)  > (arrEntities[i].Center_Y - arrEntities[i].#_iBodyHeight/2))
-                    {
-                        bIsFree = false;
-                    }
-                    else
-                    {
-                        bIsFree = true;
-                    }
-                }
-            }
-        }
-
-        return bIsFree;
-
-    }
-
-    //Check if there is any entity at the down of this instance.
-    //Arguments:
-    //  -   arrEntities - List of entities for check
-    //  -   iDelta      - The distance to move the Entity from the current position
-    //Return:
-    //  -   true/false  - Direction is free/not
-    #IsDownDirectionFree(arrEntities,iDelta)
-    {
-        var bIsFree = true;
-
-        for(let i=0;i<arrEntities.length && bIsFree;i++)
-        {
-            if(!(this.#_rCenter_X == arrEntities[i].#_rCenter_X && this.#_rCenter_Y == arrEntities[i].#_rCenter_Y))
-            {
-                if(!this.#inCol(arrEntities[i],iDelta))
-                {
-                    bIsFree = true;
-                }
-                else
-                {
-                    if((this.Center_Y + this.#_iBodyHeight/2 + iDelta)  > (arrEntities[i].Center_Y - arrEntities[i].#_iBodyHeight/2) && (this.Center_Y + this.#_iBodyHeight/2 + iDelta)  < (arrEntities[i].Center_Y + arrEntities[i].#_iBodyHeight/2))
-                    {
-                        bIsFree = false;
-                    }
-                    else
-                    {
-                        bIsFree = true;
-                    }
-                }
-            }
-        }
-
-        return bIsFree;
-        
-    }
-
-    //Check if there is any entity at the right of this instance.
-    //Arguments:
-    //  -   arrEntities - List of entities for check
-    //  -   iDelta      - The distance to move the Entity from the current position
-    //Return:
-    //  -   true/false  - Direction is free/not
-    #IsRightDirectionFree(arrEntities,iDelta)
-    {
-        var bIsFree = true;
-
-        for(let i=0;i<arrEntities.length && bIsFree;i++)
-        {
-            if(!(this.#_rCenter_X == arrEntities[i].#_rCenter_X && this.#_rCenter_Y == arrEntities[i].#_rCenter_Y))
-            {
-                if(!this.#InRow(arrEntities[i],iDelta))
-                {
-                    bIsFree = true;
-                }
-                else
-                {
-                    if((this.Center_X + this.#_iBodyHeight/2 + iDelta)  > (arrEntities[i].Center_X - arrEntities[i].#_iBodyHeight/2) && (this.Center_X + this.#_iBodyHeight/2 + iDelta)  < (arrEntities[i].Center_X + arrEntities[i].#_iBodyHeight/2))
-                    {
-                        bIsFree = false;
-                    }
-                    else
-                    {
-                        bIsFree = true;
-                    }
-                }
-            }
-        }
-
-        return bIsFree;
-        
-    }
-
-    //Check if there is any entity at the left of this instance.
-    //Arguments:
-    //  -   arrEntities - List of entities for check
-    //  -   iDelta      - The distance to move the Entity from the current position
-    //Return:
-    //  -   true/false  - Direction is free/not
-    #IsLeftDirectionFree(arrEntities,iDelta)
-    {
-        var bIsFree = true;
-
-        for(let i=0;i<arrEntities.length && bIsFree;i++)
-        {
-            if(!(this.#_rCenter_X == arrEntities[i].#_rCenter_X && this.#_rCenter_Y == arrEntities[i].#_rCenter_Y))
-            {
-                if(!this.#InRow(arrEntities[i],iDelta))
-                {
-                    bIsFree = true;
-                }
-                else
-                {
-                    if((this.Center_X - this.#_iBodyHeight/2 - iDelta)  < (arrEntities[i].Center_X + arrEntities[i].#_iBodyHeight/2) && (this.Center_X - this.#_iBodyHeight/2 - iDelta)  > (arrEntities[i].Center_X - arrEntities[i].#_iBodyHeight/2))
-                    {
-                        bIsFree = false;
-                    }
-                    else
-                    {
-                        bIsFree = true;
-                    }
-                }
-            }
-        }
-
-        return bIsFree;
-        
+        this.#setX(this.#_rCenter_X - iSpeed);
+        this._iCurrentDirection = Direction.Left;
     }
 
     //Clear the Entity from current position
@@ -309,8 +111,12 @@ class Entity
     //  -   None
     _clearEntity()
     {
-        this._oContext.clearRect(this.Center_X - this.#_iBodyWidth/2, this.Center_Y - this.#_iBodyHeight/2, this.#_iBodyWidth , this.#_iBodyHeight);
+        this._oContext.clearRect(this.Center_X - this._iBodyWidth/2, this.Center_Y - this._iBodyHeight/2, this._iBodyWidth , this._iBodyHeight);
     }
+
+    //#endregion //Protected Methods
+
+    //#region Private Methods-----------------------------------------------
 
     //Setter for The x-coordinate of the center of the Entity.
     //Implemented through regular method(not setter) because should be private
@@ -346,6 +152,28 @@ class Direction
     static Down = 1;
     static Right = 2;
     static Left = 3;
+
+    static GetKeyDirByName(name)
+    {
+        switch(name)
+        {
+            case "ArrowUp":
+                return Direction.Up;
+            break;
+
+            case "ArrowDown":
+                return Direction.Down;
+            break;
+
+            case "ArrowLeft":
+                return Direction.Left;
+            break;
+
+            case "ArrowRight":
+                return Direction.Right;
+            break;
+        };
+    }
 }
 
 //The class represents data about all possible cell content types
@@ -627,10 +455,4 @@ class Timer
 
     //#endregion //Private Methods
 
-}
-
-class Coordinates
-{
-    X;
-    Y;
 }

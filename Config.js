@@ -68,6 +68,7 @@ class BoardConfig
     }
 
     //#endregion //Properties
+
 }
 
 //The class that represents game pac man configuration
@@ -187,8 +188,6 @@ class CellTypeConfig
     #_rMINES_RATIO;      //Calculated in constructor constant - Ratio of balls to be dropped on the board
     #_rBALLS_RATIO;      //Calculated in constructor constant - Ratio of balls to be dropped on the board
     #_rEMPTY_RATIO;      //Calculated in constructor constant - Ratio of balls to be dropped on the board
-    #_iCellsAmount;      //Number of cells in the board
-    #_iCellSize;         //Cell size in a pixels
     #_iTypeImgSize;      //Size of images
     #_Ids          = []; //Id's of a given type
     #_Scores       = []; //Points per ball of a given type
@@ -199,17 +198,6 @@ class CellTypeConfig
 
     //#region Properties----------------------------------------------------
 
-    //Number of cells in the board
-    get CellsAmount()
-    {
-        return this.#_iCellsAmount;
-    }
-
-    //Cell size in a pixels
-    get CellSize()
-    {
-        return this.#_iCellSize;
-    }
 
     //Size of images
     get TypeImgSize()
@@ -251,15 +239,14 @@ class CellTypeConfig
     //  -   iColsNum     - Number of columns in the board
     //Return:
     //  -   None
-    constructor(oBoard, iRowsNum, iColsNum)
+    constructor()
     {
-        this.#_iCellSize      = oBoard.BoardWidth/iColsNum;     //Calculated constant - Cell  side size
         this.#_rCANDIES_RATIO = Config.iCANDIES_PERCENT/100;    //Calculated constant - Ratio of balls to be dropped on the board
         this.#_rMINES_RATIO   = Config.iMINES_PERCENT/100;      //Calculated constant - Ratio of balls to be dropped on the board
         this.#_rBALLS_RATIO   = Config.iBALLS_PERCENT/100;	    //Calculated constant - Ratio of balls to be dropped on the board
         this.#_rEMPTY_RATIO   = Config.iEMPTY_PERCENT/100;	    //Calculated constant - Ratio of balls to be dropped on the board
         
-        this.#_iCellsAmount = iColsNum*iRowsNum;
+        
         this.#_iTypeImgSize = Config.iITEMS_IMG_SIZE;
         this.#typeDefinition(Config.iEMPTY_ID, Config.iEMPTY_SCORE, this.#_rEMPTY_RATIO, Config.sEMPTY_IMG_PATH);
         this.#typeDefinition(Config.iBALLS_ID, Config.iBALLS_SCORE, this.#_rBALLS_RATIO, Config.sBALLS_IMG_PATH);

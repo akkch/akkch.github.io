@@ -3,10 +3,9 @@ class Monsters
 {
     //#region Fields--------------------------------------------------------
 
-    static #_oMonstConf = new MonstersConfig();
-    static iInitialPos_X = 40;
-    static iInitialPos_Y = 40;
-    static iStep = 80;
+    static #_oMonstConf;                //Monsters configuration object
+    static #_iFirstMonsterInitialPos_X; //Starting position on the X-axis of the first monster added to the board
+    static #_iFirstMonsterInitialPos_Y; //Starting position on the Y-axis of the first monster added to the board
 
     //#endregion //Fields
 
@@ -15,14 +14,20 @@ class Monsters
     //Runs all the monsters
     //Arguments:
     //  -   oBoard    - Link to the game board
+    //  -   oMonstConf- Monsters configuration object
     //Return:
     //  -   None
-    static Run(oBoard)
+    static Run(oBoard, oMonstConf)
     {
+        Monsters.#init(oBoard, oMonstConf)
+
         var MosterCanvas = document.getElementById(Monsters.#_oMonstConf.CanvasName);
+        var y;
+
         for(let i=0;i<Monsters.#_oMonstConf.ArrImagePath.length;i++)
         {
-            new Monster(oBoard,MosterCanvas,Monsters.iInitialPos_X, Monsters.#setInitPosition(i,Monsters.iInitialPos_Y) ,Monsters.#_oMonstConf.ArrImagePath[i],Monsters.#_oMonstConf.ImageSize);
+            y = Monsters.#setInitPosition(i,oBoard, Monsters.#_iFirstMonsterInitialPos_Y);
+            new Monster(oBoard,MosterCanvas,Monsters.#_iFirstMonsterInitialPos_X,  y,Monsters.#_oMonstConf.ArrImagePath[i],Monsters.#_oMonstConf.ImageSize);
         }
     }
     
@@ -30,20 +35,33 @@ class Monsters
 
     //#region Private Methods-----------------------------------------------
 
+    //Instance initialization
+    //Arguments:
+    //  -   oBoard    - Link to the game board
+    //  -   oMonstConf- Monsters configuration object
+    //Return:
+    //  -   None
+    static #init(oBoard, oMonstConf)
+    {
+        Monsters.#_oMonstConf = oMonstConf;
+        Monsters.#_iFirstMonsterInitialPos_X = oBoard.LeftEntityLimit;
+        Monsters.#_iFirstMonsterInitialPos_Y = oBoard.TopEntityLimit;
+    }
+
     //Set initial position of current moster
     //Arguments:
     //  -   iMonsterNum             - Number of current monster
+    //  -   oBoard                  - Link to the game board
     //  -   iFirstMonsteInitCoord   - Initial position of first monster coordinate
     //Return:
     //  -   Initial position of current moster
-    static #setInitPosition(iMonsterNum, iFirstMonsteInitCoord)
+    static #setInitPosition(iMonsterNum, oBoard, iFirstMonsteInitCoord)
     {
-        return iFirstMonsteInitCoord + (iMonsterNum*Monsters.iStep);
+        return iFirstMonsteInitCoord + (iMonsterNum * oBoard.BoardCellSize);
     }
 
     //#endregion //Private Methods
 }
-
 
 //The class that represents the Monster object
 class Monster extends Entity
@@ -59,15 +77,13 @@ class Monster extends Entity
 
     //#endregion //Fields
 
-    //#region Properties----------------------------------------------------
-    //#endregion //Properties
-
     //#region Constructors--------------------------------------------------
 
     //Main Constructor
     //Arguments:
+    //  -   oBoard      - Link to instance of game board
     //  -   oCanvas     - Link to instance of canvas object
-    //  -   rCenter_Y   - The x-coordinate of the center of the Pac Man
+    //  -   rCenter_X   - The x-coordinate of the center of the Pac Man
     //  -   rCenter_Y   - The y-coordinate of the center of the Pac Man
     //  -   sImagePath  - Path to Monster image
     //  -   iImgSize    - Size of Monster image(In px)
@@ -105,20 +121,20 @@ class Monster extends Entity
     {
         switch(this._iCurrentDirection)
         {
-            case 0:
-                this.#_bMoved = super.MoveUp(Monster.#_oBoard,Monster.#_arrMonsters);
+            case Direction.Up:
+                this.#_bMoved = this.MoveUp(Monster.#_oBoard,Monster.#_arrMonsters);
             break;
     
-            case 1:
-                this.#_bMoved = super.MoveDown(Monster.#_oBoard,Monster.#_arrMonsters);
+            case Direction.Down:
+                this.#_bMoved = this.MoveDown(Monster.#_oBoard,Monster.#_arrMonsters);
             break;
     
-            case 2:
-                this.#_bMoved = super.MoveRight(Monster.#_oBoard,Monster.#_arrMonsters);
+            case Direction.Right:
+                this.#_bMoved = this.MoveRight(Monster.#_oBoard,Monster.#_arrMonsters);
             break;
     
-            case 3:
-                this.#_bMoved = super.MoveLeft(Monster.#_oBoard,Monster.#_arrMonsters);
+            case Direction.Left:
+                this.#_bMoved = this.MoveLeft(Monster.#_oBoard,Monster.#_arrMonsters);
             break;
     
             default:
@@ -137,6 +153,78 @@ class Monster extends Entity
         }
     }
     
+    //Moves a Entity up
+    //Arguments:
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
+    //Return:
+    //  -   true/false - Was moved/not
+    MoveUp(oBoard = -1, arrEntities = -1)
+    {
+        var bIsMoved = false;
+        if(oBoard != -1 && arrEntities != -1 && this.#IsUpDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y>oBoard.TopEntityLimit)
+        {
+            super._moveUp(oBoard.BoardSpeed);
+            bIsMoved = true;
+        }
+
+        return bIsMoved;
+    }
+
+    //Moves a Entity down
+    //Arguments:
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
+    //Return:
+    //  -   true/false - Was moved/not
+    MoveDown(oBoard = -1, arrEntities = -1)
+    {
+        var bIsMoved = false;
+        if(oBoard != -1 && arrEntities != -1 && this.#IsDownDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y<oBoard.DownEntityLimit)
+        {
+            super._moveDown(oBoard.BoardSpeed);
+            bIsMoved = true;
+        }
+
+        return bIsMoved
+    }
+
+    //Moves a Entity right
+    //Arguments:
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
+    //Return:
+    //  -   true/false - Was moved/not
+    MoveRight(oBoard = -1, arrEntities = -1)
+    {
+        var bIsMoved = false;
+        if(oBoard != -1 && arrEntities != -1 && this.#IsRightDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X<oBoard.RightEntityLimit)
+        {
+            super._moveRight(oBoard.BoardSpeed);
+            bIsMoved = true;
+        }
+
+        return bIsMoved
+    }
+
+    //Moves a Entity left
+    //Arguments:
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
+    //Return:
+    //  -   true/false - Was moved/not
+    MoveLeft(oBoard = -1, arrEntities = -1)
+    {
+        var bIsMoved = false;
+        if(oBoard != -1 && arrEntities != -1 && this.#IsLeftDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X>oBoard.LeftEntityLimit)
+        {
+            super._moveLeft(oBoard.BoardSpeed);
+            bIsMoved = true;
+        }
+
+        return bIsMoved
+    }
+
     //#endregion //Public Methods
 
     //#region Private Methods-----------------------------------------------
@@ -149,7 +237,7 @@ class Monster extends Entity
     #draw()
     {
         this._clearEntity();
-        this.#drawImage(this._oContext, this.#_oImg, this.#GetImgCoord(this.Center_X), this.#GetImgCoord(this.Center_Y));
+        this.#drawImage(this._oContext, this.#_oImg, this.#getImgCoord(this.Center_X), this.#getImgCoord(this.Center_Y));
     }
 
     //Draw type image
@@ -176,9 +264,175 @@ class Monster extends Entity
     //  -   rCenterCoord    - Cell center requested coordinate
     //Return:
     //  -   Calculated coordinate
-    #GetImgCoord(rCenterCoord)
+    #getImgCoord(rCenterCoord)
     {
         return rCenterCoord - this.#_iImgSize/2;
+    }
+
+     //Check if an entity instance is on the same row as this instance
+    //Arguments:
+    //  -   oEntity - Requested entity instance
+    //  -   iDelta  - The distance to move the Entity from the current position
+    //Return:
+    //  -   true/false - Located on the same row/not
+    #InRow(oEntity,iDelta)
+    {
+        return (this.Center_Y-this._iBodyHeight/2 - iDelta) < (oEntity.Center_Y + oEntity._iBodyHeight/2) && (this.Center_Y+this._iBodyHeight/2 + iDelta) > (oEntity.Center_Y - oEntity._iBodyHeight/2);
+    }
+
+    //Check if an entity instance is on the same column as this instance
+    //Arguments:
+    //  -   oEntity - Requested entity instance
+    //  -   iDelta  - The distance to move the Entity from the current position
+    //Return:
+    //  -   true/false - Located on the same column/not
+    #inCol(oEntity,iDelta)
+    {
+        return ((this.Center_X-this._iBodyHeight/2 - iDelta) < (oEntity.Center_X + oEntity._iBodyHeight/2) && (this.Center_X+this._iBodyHeight/2 + iDelta) > (oEntity.Center_X - oEntity._iBodyHeight/2));
+    }
+
+    //Check if there is any entity at the top of this instance.
+    //Arguments:
+    //  -   arrEntities - List of entities for check
+    //  -   iDelta      - The distance to move the Entity from the current position
+    //Return:
+    //  -   true/false  - Direction is free/not
+    #IsUpDirectionFree(arrEntities,iDelta)
+    {
+        var bIsFree = true;
+
+        for(let i=0;i<arrEntities.length && bIsFree;i++)
+        {
+            if(!(this.Center_X == arrEntities[i].Center_X && this.Center_Y == arrEntities[i].Center_Y))
+            {
+                if(!this.#inCol(arrEntities[i],iDelta))
+                {
+                    bIsFree = true;
+                }
+                else
+                {
+                    if((this.Center_Y - this._iBodyHeight/2 - iDelta)  < (arrEntities[i].Center_Y + arrEntities[i]._iBodyHeight/2) && (this.Center_Y - this._iBodyHeight/2 - iDelta)  > (arrEntities[i].Center_Y - arrEntities[i]._iBodyHeight/2))
+                    {
+                        bIsFree = false;
+                    }
+                    else
+                    {
+                        bIsFree = true;
+                    }
+                }
+            }
+        }
+
+        return bIsFree;
+
+    }
+
+    //Check if there is any entity at the down of this instance.
+    //Arguments:
+    //  -   arrEntities - List of entities for check
+    //  -   iDelta      - The distance to move the Entity from the current position
+    //Return:
+    //  -   true/false  - Direction is free/not
+    #IsDownDirectionFree(arrEntities,iDelta)
+    {
+        var bIsFree = true;
+
+        for(let i=0;i<arrEntities.length && bIsFree;i++)
+        {
+            if(!(this.Center_X == arrEntities[i].Center_X && this.Center_Y == arrEntities[i].Center_Y))
+            {
+                if(!this.#inCol(arrEntities[i],iDelta))
+                {
+                    bIsFree = true;
+                }
+                else
+                {
+                    if((this.Center_Y + this._iBodyHeight/2 + iDelta)  > (arrEntities[i].Center_Y - arrEntities[i]._iBodyHeight/2) && (this.Center_Y + this._iBodyHeight/2 + iDelta)  < (arrEntities[i].Center_Y + arrEntities[i]._iBodyHeight/2))
+                    {
+                        bIsFree = false;
+                    }
+                    else
+                    {
+                        bIsFree = true;
+                    }
+                }
+            }
+        }
+
+        return bIsFree;
+        
+    }
+
+    //Check if there is any entity at the right of this instance.
+    //Arguments:
+    //  -   arrEntities - List of entities for check
+    //  -   iDelta      - The distance to move the Entity from the current position
+    //Return:
+    //  -   true/false  - Direction is free/not
+    #IsRightDirectionFree(arrEntities,iDelta)
+    {
+        var bIsFree = true;
+
+        for(let i=0;i<arrEntities.length && bIsFree;i++)
+        {
+            if(!(this.Center_X == arrEntities[i].Center_X && this.Center_Y == arrEntities[i].Center_Y))
+            {
+                if(!this.#InRow(arrEntities[i],iDelta))
+                {
+                    bIsFree = true;
+                }
+                else
+                {
+                    if((this.Center_X + this._iBodyHeight/2 + iDelta)  > (arrEntities[i].Center_X - arrEntities[i]._iBodyHeight/2) && (this.Center_X + this._iBodyHeight/2 + iDelta)  < (arrEntities[i].Center_X + arrEntities[i]._iBodyHeight/2))
+                    {
+                        bIsFree = false;
+                    }
+                    else
+                    {
+                        bIsFree = true;
+                    }
+                }
+            }
+        }
+
+        return bIsFree;
+        
+    }
+
+    //Check if there is any entity at the left of this instance.
+    //Arguments:
+    //  -   arrEntities - List of entities for check
+    //  -   iDelta      - The distance to move the Entity from the current position
+    //Return:
+    //  -   true/false  - Direction is free/not
+    #IsLeftDirectionFree(arrEntities,iDelta)
+    {
+        var bIsFree = true;
+
+        for(let i=0;i<arrEntities.length && bIsFree;i++)
+        {
+            if(!(this.Center_X == arrEntities[i].Center_X && this.Center_Y == arrEntities[i].Center_Y))
+            {
+                if(!this.#InRow(arrEntities[i],iDelta))
+                {
+                    bIsFree = true;
+                }
+                else
+                {
+                    if((this.Center_X - this._iBodyHeight/2 - iDelta)  < (arrEntities[i].Center_X + arrEntities[i]._iBodyHeight/2) && (this.Center_X - this._iBodyHeight/2 - iDelta)  > (arrEntities[i].Center_X - arrEntities[i]._iBodyHeight/2))
+                    {
+                        bIsFree = false;
+                    }
+                    else
+                    {
+                        bIsFree = true;
+                    }
+                }
+            }
+        }
+
+        return bIsFree;
+        
     }
 
     //#endregion //Private Methods

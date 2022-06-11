@@ -3,12 +3,9 @@ class PacMan extends Entity
 {
     //#region Fields--------------------------------------------------------
 
-    #_rAngleDelta;          //Step/Delta to change the angle when drawing the opening/closing of the mouth of Pac Man
+    static #_oBoard;        //Link to game board
+    static #_oPacManConfig; //Pac man configuration object
     #_rCurrentAngleDelta;   //Pac Man's current mouth opening/closing angle
-    #_sBodyColor;           //Pac Man's body background color
-    #_rBodyRadius;          //Pac Man's body radius
-    #_sEyeColor;            //Pac Man's eye background color
-    #_rEyeRadius;           //Pac Man's eye radius
     #_bOpenMouth;           //Status of Pac Man's mouth position(true/false - openning/closing)
 
     //#endregion //Fields
@@ -20,38 +17,150 @@ class PacMan extends Entity
 
     //Main constructor
     //Arguments:
-    //  -   oCanvas             - Link to instance of canvas object
-    //  -   rCenter_Y           - The x-coordinate of the center of the Pac Man
-    //  -   rCenter_Y           - The y-coordinate of the center of the Pac Man
-    //  -   rBodyRadius         - (Optional)Pac Man's body radius. Default - Right
-    //  -   rEyeRadius          - (Optional)Pac Man's eye radius. Default - Right
-    //  -   sBodyColor          - (Optional)Pac Man's body background color. Default - Right
-    //  -   sEyeColor           - (Optional)Pac Man's eye background color. Default - Right
+    //  -   oBoard          - Link to instance of game board
+    //  -   oPacManConfig   - Pac man configuration object
+    //  -   oCanvas         - Link to instance of canvas object
     //Return:
     //  -   None
-    constructor(oCanvas,rCenter_X, rCenter_Y, rBodyRadius = 30, rEyeRadius = 5, sBodyColor = "mediumslateblue", sEyeColor = "black")
+    constructor(oBoard, oPacManConfig, oCanvas)
     {
-        var iSideSize = rBodyRadius*2;
-        super(oCanvas,rCenter_X,rCenter_Y,iSideSize,iSideSize);
+        PacMan.#_oBoard = oBoard;
+        PacMan.#_oPacManConfig = oPacManConfig;
 
-        this.#_sBodyColor = sBodyColor;
-        this.#_sEyeColor = sEyeColor;
-        this.#_rAngleDelta = 0.05;
-        this.#_rCurrentAngleDelta = 0;
-        this.#_rBodyRadius = rBodyRadius;
-        this.#_rEyeRadius = rEyeRadius;
+        var iPacManDiametr = PacMan.#_oPacManConfig.BodyRadius*2;
+
+        super(oCanvas,oBoard.RightEntityLimit,oBoard.DownEntityLimit,iPacManDiametr,iPacManDiametr);
+        
     }
 
     //#endregion //Constructor
 
     //#region Public Methods------------------------------------------------
 
+    //Moves a Entity up
+    //Arguments:
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
+    //Return:
+    //  -   true/false - Was moved/not
+    MoveUp(oBoard = -1, arrEntities = -1)
+    {
+        var bIsMoved = false;
+        if(oBoard != -1 && arrEntities != -1 && this.#IsUpDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y>oBoard.TopEntityLimit)
+        {
+            this.#setY(this.Center_Y - oBoard.BoardSpeed);
+            this._iCurrentDirection = Direction.Up;
+            bIsMoved = true;
+        }
+
+        return bIsMoved;
+    }
+
+    //Moves a Entity down
+    //Arguments:
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
+    //Return:
+    //  -   true/false - Was moved/not
+    MoveDown(oBoard = -1, arrEntities = -1)
+    {
+        var bIsMoved = false;
+        if(oBoard != -1 && arrEntities != -1 && this.#IsDownDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_Y<oBoard.DownEntityLimit)
+        {
+            this.#setY(this.Center_Y + oBoard.BoardSpeed);
+        this._iCurrentDirection = Direction.Down;
+            bIsMoved = true;
+        }
+
+        return bIsMoved
+    }
+
+    //Moves a Entity right
+    //Arguments:
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
+    //Return:
+    //  -   true/false - Was moved/not
+    MoveRight(oBoard = -1, arrEntities = -1)
+    {
+        var bIsMoved = false;
+        if(oBoard != -1 && arrEntities != -1 && this.#IsRightDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X<oBoard.RightEntityLimit)
+        {
+            this.#setX(this.#_rCenter_X + oBoard.BoardSpeed);
+            this._iCurrentDirection = Direction.Right;
+            bIsMoved = true;
+        }
+
+        return bIsMoved
+    }
+
+    //Moves a Entity left
+    //Arguments:
+    //  -   oBoard      - Link to game board
+    //  -   arrEntities - List of entities participating in the game
+    //Return:
+    //  -   true/false - Was moved/not
+    MoveLeft(oBoard = -1, arrEntities = -1)
+    {
+        var bIsMoved = false;
+        if(oBoard != -1 && arrEntities != -1 && this.#IsLeftDirectionFree(arrEntities,oBoard.BoardSpeed) && this.Center_X>oBoard.LeftEntityLimit)
+        {
+            this.#setX(this.#_rCenter_X - oBoard.BoardSpeed);
+            this._iCurrentDirection = Direction.Left;
+            bIsMoved = true;
+        }
+
+        return bIsMoved
+    }
+
+    //On tick event handler
+    //Arguments:
+    //  -   None
+    //Return:
+    //  -   None
+    OnTick()
+    {
+        this.#draw();
+    }
+
+
+    OnKeyPressed(event)
+    {
+        switch(Direction.GetKeyDirByName(event.key))
+        {
+            case Direction.Down:
+                if(pacMan.Center_Y>rPacManStartPos_Y)
+                    pacMan.MoveUp(speed);
+            break;
+
+            case Direction.Down:
+                if(pacMan.Center_Y<rPacManEndPos_Y)
+                    pacMan.MoveDown(speed);
+            break;
+
+            case Direction.Down:
+                if(pacMan.Center_X>rPacManStartPos_X)
+                    pacMan.MoveLeft(speed);
+            break;
+
+            case Direction.Down:
+                if(pacMan.Center_X<rPacManEndPos_X)
+                    pacMan.MoveRight(speed);
+            break;
+
+        };
+    }
+
+    //#endregion //Public Methods
+
+    //#region Private Methods-----------------------------------------------
+
     //Draws Pac Man
     //Arguments:
     //  -   None
     //Return:
     //  -   None
-    Draw()
+    #draw()
     {
         this._clearEntity();
         switch(this._iCurrentDirection)
@@ -78,10 +187,6 @@ class PacMan extends Entity
                 break;
         }
     }
-
-    //#endregion //Public Methods
-
-    //#region Private Methods-----------------------------------------------
 
     //Draws the body of Pac Man(drawn with 2 half circles)
     //Arguments:

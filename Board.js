@@ -8,11 +8,12 @@ class Board
     #_iColsNum;	    //Number of columns in the board
 
     #_iLeftEntityLimit; //Left border of the board
-    #_iRightEntityLimit;      //Right border of the board
+    #_iRightEntityLimit;//Right border of the board
     #_iTopEntityLimit;  //Top border of the board
     #_iDownEntityLimit; //Down border of the board
 
-    #_iBoardSpeed;  //Down border of the board
+    #_oBoardConfig;   //Board configuration
+    #_iBoardCellSize; //Board cell size
 
     get BoardWidth()
     {
@@ -21,7 +22,22 @@ class Board
 
     get BoardSpeed()
     {
-        return this.#_iBoardSpeed;
+        return this.#_oBoardConfig.Speed;
+    }
+
+    get BoardCellSize()
+    {
+        return this.#_iBoardCellSize;
+    }
+
+    get iRowsNum()
+    {
+        return this.#_iRowsNum;
+    }
+
+    get iColsNum()
+    {
+        return this.#_iColsNum;
     }
 
     get LeftEntityLimit()
@@ -44,17 +60,20 @@ class Board
         return this.#_iDownEntityLimit;
     }
 
-    Draw(oBoardConfig, oCellTypeConfig, iRowsNum, iColsNum)
+    constructor(oBoardConfig)
     {
         this.#_oCanvas  = document.getElementById(oBoardConfig.CanvasName);
+        this.#_oBoardConfig = oBoardConfig;
         this.#_iWidth   = this.#_oCanvas.width;
 		this.#_iHeight  = this.#_oCanvas.height;
+    }
+    
+    Draw(iRowsNum, iColsNum)
+    {
         this.#_iRowsNum = iRowsNum;
         this.#_iColsNum = iColsNum;
-        this.#_iBoardSpeed = oBoardConfig.Speed;
-        var oCellTypeConfig = new CellTypeConfig(this, this.#_iRowsNum, this.#_iColsNum);
-
-        this.#setLimits(oBoardConfig,oCellTypeConfig)
+        this.#_iBoardCellSize = this.#_iWidth/this.#_iColsNum;
+        this.#setLimits();
 
     //    for(let i=1;i<=this.#_iRowsNum;i++)
     //    {
@@ -68,9 +87,9 @@ class Board
     }
 
 
-    #setLimits(oBoardConfig,oCellTypeConfig)
+    #setLimits()
     {
-        var delta = oCellTypeConfig.CellSize/2;
+        var delta = this.#_iBoardCellSize/2;
         this.#_iLeftEntityLimit = delta;
         this.#_iRightEntityLimit = this.#_iWidth - delta;
         this.#_iTopEntityLimit = delta;

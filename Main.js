@@ -2,27 +2,42 @@ var monstConf;
 var oBoard;
 var oBoardConfig;
 var oCellTypeConfig
+var oMonstConf;
 var monsters = [];
+
+
+
+
+
+
 var rPacManStartPos_X = 40;
 var rPacManStartPos_Y = 40;
+var rPacManEndPos_X = 760;
+var rPacManEndPos_Y = 760;
+var pacMan;
+var speed = 5;
 
 window.onload = function()
  {
 
     oBoardConfig = new BoardConfig();
-    oCellTypeConfig = new CellTypeConfig(this, this.#_iRowsNum, this.#_iColsNum);
+    oBoard = new Board(oBoardConfig);
 
+    
+    oCellTypeConfig = new CellTypeConfig();
+    oBoard.Draw(10, 10);
 
-    oBoard = new Board();
+    oMonstConf = new MonstersConfig();
+    Monsters.Run(oBoard,oMonstConf)
 
-    oBoard.Draw(oBoardConfig, 10, 10);
-
-    Monsters.Run(oBoard)
+    // setPacMan();
+    // window.setInterval(start, 10);
 
  }
 
 function setPacMan()
 {
+    var canvas = document.getElementById("BoardCanvas");
     pacMan = new PacMan(canvas,rPacManStartPos_X, rPacManStartPos_Y);
 
     document.addEventListener('keydown', (event) => {
