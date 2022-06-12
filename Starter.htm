@@ -2,6 +2,7 @@
 <HTML>
 	<HEAD>
 		<link rel="stylesheet" href="StyleSheet.css"/>
+<<<<<<< HEAD
 		<link rel="stylesheet" href="Menu.css"/>
 		<link rel="stylesheet" href="Game.css"/>
 		<link rel="stylesheet" href="OptionsPopup.css"/>
@@ -13,91 +14,19 @@
 		<script src="PacMan.js"></script>
 		<script src="Monster.js"></script> -->
 		<script type="module" src="Game.js"></script>
+=======
+		<script src="Helpers.js"></script>
+		<script src="Config.js"></script>
+		<script src="Cell.js"></script>
+		<script src="Board.js"></script>
+		<script src="PacMan.js"></script>
+		<script src="Monster.js"></script>
+>>>>>>> parent of f148890 (Last backup 12.06.2022)
 		<script src="Main.js"></script>
 	</HEAD>
 	<BODY>
-		<!-- region Options popup -->
-		<div id="OptionsWrapper" class="modal">
-
-			<div id="Options" class="modal-content">
-				<div class="optionsRow">
-					<details>
-						<summary id="BoardSize">
-							<input type="radio" name="BoardSizeItem" id="BoardSize_default" title="Choose board size" checked>
-							<input type="radio" name="BoardSizeItem" id="BoardSize_3X3" title="3X3" value="3">
-							<input type="radio" name="BoardSizeItem" id="BoardSize_4X4" title="4X4" value="4">
-							<input type="radio" name="BoardSizeItem" id="BoardSize_5X5" title="5X5" value="5">
-							<input type="radio" name="BoardSizeItem" id="BoardSize_6X6" title="6X6" value="6">
-							<input type="radio" name="BoardSizeItem" id="BoardSize_7X7" title="7X7" value="7">
-						</summary>
-						<ul>
-							<li><label for="BoardSize_3X3">3X3</label></li>
-							<li><label for="BoardSize_4X4">4X4</label></li>
-							<li><label for="BoardSize_5X5">5X5</label></li>
-							<li><label for="BoardSize_6X6">6X6</label></li>
-							<li><label for="BoardSize_7X7">7X7</label></li>
-						</ul>
-					</details>
-					
-					<details>
-						<summary id="GameComplex">
-							<input type="radio" name="GameComplexItem" id="GameComplex_default" title="Choose game complexity" checked>
-							<input type="radio" name="GameComplexItem" id="GameComplex_Easy" title="Easy" value="Easy">
-							<input type="radio" name="GameComplexItem" id="GameComplex_Medium" title="Medium" value="Medium">
-							<input type="radio" name="GameComplexItem" id="GameComplex_Hard" title="Hard" value="Hard">
-						</summary>
-						<ul>
-							<li><label for="GameComplex_Easy">Easy</label></li>
-							<li><label for="GameComplex_Medium">Medium</label></li>
-							<li><label for="GameComplex_Hard">Hard</label></li>
-						</ul>
-					</details>
-					<div id="Player1" class="Player">
-						<input type="text" id="Player1_Name" class="PlayerTbox" value="Enter Player 1 Nickname">
-						<input type="color" value="#282828" id="Player1_Color" class="PlayerColor" title="Enter Player 1 Color">
-					</div>
-					<div id="Player2" class="Player">
-						<input type="text" id="Player2_Name" class="PlayerTbox" value="Enter Player 2 Nickname">
-						<input type="color" value="#282828" id="Player2_Color" class="PlayerColor" title="Enter Player 2 Color">
-					</div>
-				</div>
-			</div>
-		</div>
-<!-- endregion Options popup -->
-<!-- region Game container-->
-	<div id="container">
-
-		<div id="GameHeader">
-			<div id="MainMenu" class="menu" onclick="menuSymChanger(this)">
-				<div class="bar1"></div>
-				<div class="bar2"></div>
-				<div class="bar3"></div>
-				<div id="myDropdown" class="dropdown-content">
-					<a id="Option1">New Game</a>
-					<a id="Option2">Options</a>
-				</div>
-			</div>
-			<div>
-				<h1>Pac Man Game</h1>
-			</div>
-		</div>
-			
-		<div id="CurrentTime"></div>
-		<div id="PlayerTurn"></div>
-		<div id="Player1Field" class="PlayerField">
-			<h1 id="Player1_Name_Present"></h1>
-			<h1 id="Player1_Time_Present"></h1>
-			<div class="X whiteColor">X</div>
-		</div>
-		<div id="Player2Field" class="PlayerField">
-			<h1 id="Player2_Name_Present"></h1>
-			<h1 id="Player2_Time_Present"></h1>
-			<div class="O whiteColor">O</div>
-		</div>
+		<div id="coords"></div>
 		<canvas id="BoardCanvas" width="800" height="800"></canvas>
 		<canvas id="MonstersCanvas" width="800" height="800"></canvas>
-		<canvas id="PacManCanvas" width="800" height="800"></canvas>
-	</div>
-<!-- endregion Game container-->
 	</BODY>
 </HTML>

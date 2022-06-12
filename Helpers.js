@@ -71,24 +71,15 @@ export class Entity
     _moveUp(rSpeedRatio = 1)
     {
         var bIsMoved = false;
-        var indexes = this.#getIndexes();
 
-        var i = Math.ceil(indexes.i_raw);
-        var j = Math.ceil(indexes.j_raw);
-
-        if(this.Center_Y>Entity._oBoard.TopEntityLimit && (this.Center_X + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bUpBoard)
+        if(this.Center_Y>Entity._oBoard.TopEntityLimit)
         {
             this.#setY(this.Center_Y - Entity._oBoard.BoardSpeed*rSpeedRatio);
             this._iCurrentDirection = Direction.Up;
-
             bIsMoved = true;
         }
-        else
-        {
-           // console.log(indexes.i + " " + indexes.j);
-        }
             
-        return { bIsMoved , i , j }
+        return bIsMoved;
     }
 
     //Moves a Entity down
@@ -99,23 +90,15 @@ export class Entity
     _moveDown(rSpeedRatio = 1)
     {
         var bIsMoved = false;
-        var indexes = this.#getIndexes();
-
-        var i = Math.floor(indexes.i_raw);
-        var j = Math.floor(indexes.j_raw);
-
-        if(this.Center_Y<Entity._oBoard.DownEntityLimit && (this.Center_X + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bDownBoard)
+        
+        if(this.Center_Y<Entity._oBoard.DownEntityLimit)
         {
             this.#setY(this.Center_Y + Entity._oBoard.BoardSpeed*rSpeedRatio);
             this._iCurrentDirection = Direction.Down;
             bIsMoved = true;
         }
-        else
-        {
-           // console.log("Down : " + indexes.i + " " + indexes.j);
-        }
             
-        return { bIsMoved , i , j }
+        return bIsMoved;
     }
 
     //Moves a Entity right
@@ -126,19 +109,15 @@ export class Entity
     _moveRight(rSpeedRatio = 1)
     {
         var bIsMoved = false;
-        var indexes = this.#getIndexes();
-
-        var i = Math.floor(indexes.i_raw);
-        var j = Math.floor(indexes.j_raw);
         
-        if(this.Center_X<Entity._oBoard.RightEntityLimit && (this.Center_Y + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bRightBoard)
+        if(this.Center_X<Entity._oBoard.RightEntityLimit)
         {
             this.#setX(this.#_rCenter_X + Entity._oBoard.BoardSpeed*rSpeedRatio);
             this._iCurrentDirection = Direction.Right;
             bIsMoved = true;
         }
             
-        return { bIsMoved , i , j }
+        return bIsMoved;
     }
 
     //Moves a Entity left
@@ -149,19 +128,15 @@ export class Entity
     _moveLeft(rSpeedRatio = 1)
     {
         var bIsMoved = false;
-        var indexes = this.#getIndexes();
-
-        var i = Math.ceil(indexes.i_raw);
-        var j = Math.ceil(indexes.j_raw);
         
-        if(this.Center_X>Entity._oBoard.LeftEntityLimit && (this.Center_Y + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bLeftBoard)
+        if(this.Center_X>Entity._oBoard.LeftEntityLimit)
         {
             this.#setX(this.#_rCenter_X - Entity._oBoard.BoardSpeed*rSpeedRatio);
             this._iCurrentDirection = Direction.Left;
             bIsMoved = true;
         }
             
-        return { bIsMoved , i , j }
+        return bIsMoved;
     }
 
     //Clear the Entity from current position
@@ -200,17 +175,6 @@ export class Entity
     {
         this._clearEntity();
         this.#_rCenter_Y = value;
-    }
-
-    #getIndexes()
-    {
-        var i_raw;
-        var j_raw;
-
-        i_raw = (this.Center_Y + Entity._oBoard.BoardCellSize/2)/Entity._oBoard.BoardCellSize -1;
-        j_raw = (this.Center_X + Entity._oBoard.BoardCellSize/2)/Entity._oBoard.BoardCellSize -1;
-
-        return {i_raw,j_raw};
     }
 
     //#endregion //Private Methods
@@ -349,11 +313,6 @@ export class Type
     iScore;  //Type points amount
 
     //#endregion //Fields
-
-    get iImageSize()
-    {
-        return this.#_iImgSize;
-    }
 
     //#region Constructors--------------------------------------------------
        
