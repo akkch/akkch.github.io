@@ -1,106 +1,47 @@
-<<<<<<< HEAD
 import {Board} from './Board.js';
-=======
-//The class that represents the list of Monster objects
-class Monsters
-{
-    //#region Fields--------------------------------------------------------
-
-    static #_oMonstConf;                //Monsters configuration object
-    static #_iFirstMonsterInitialPos_X; //Starting position on the X-axis of the first monster added to the board
-    static #_iFirstMonsterInitialPos_Y; //Starting position on the Y-axis of the first monster added to the board
-
-    //#endregion //Fields
-
-    //#region Public Methods------------------------------------------------
-
-    //Runs all the monsters
-    //Arguments:
-    //  -   oBoard    - Link to the game board
-    //  -   oMonstConf- Monsters configuration object
-    //Return:
-    //  -   None
-    static Run(oBoard, oMonstConf)
-    {
-        Monsters.#init(oBoard, oMonstConf)
-
-        var oMosterCanvas = document.getElementById(Monsters.#_oMonstConf.CanvasName);
-        var y;
-
-        for(let i=0;i<Monsters.#_oMonstConf.ArrImagePath.length;i++)
-        {
-            y = Monsters.#setInitPosition(i,oBoard, Monsters.#_iFirstMonsterInitialPos_Y);
-            new Monster(oBoard,oMosterCanvas,Monsters.#_iFirstMonsterInitialPos_X,  y,Monsters.#_oMonstConf.ArrImagePath[i],Monsters.#_oMonstConf.ImageSize,Monsters.#_oMonstConf.SpeedRatio);
-        }
-    }
-    
-    //#endregion //Public Methods
-
-    //#region Private Methods-----------------------------------------------
-
-    //Instance initialization
-    //Arguments:
-    //  -   oBoard    - Link to the game board
-    //  -   oMonstConf- Monsters configuration object
-    //Return:
-    //  -   None
-    static #init(oBoard, oMonstConf)
-    {
-        Monsters.#_oMonstConf = oMonstConf;
-        Monsters.#_iFirstMonsterInitialPos_X = oBoard.LeftEntityLimit;
-        Monsters.#_iFirstMonsterInitialPos_Y = oBoard.TopEntityLimit;
-    }
-
-    //Set initial position of current moster
-    //Arguments:
-    //  -   iMonsterNum             - Number of current monster
-    //  -   oBoard                  - Link to the game board
-    //  -   iFirstMonsteInitCoord   - Initial position of first monster coordinate
-    //Return:
-    //  -   Initial position of current moster
-    static #setInitPosition(iMonsterNum, oBoard, iFirstMonsteInitCoord)
-    {
-        return iFirstMonsteInitCoord + (iMonsterNum * oBoard.BoardCellSize);
-    }
-
-    //#endregion //Private Methods
-}
->>>>>>> parent of f148890 (Last backup 12.06.2022)
 
 //The class that represents the Monster object
 export class Monster extends Entity
 {
     //#region Fields--------------------------------------------------------
 
-    static #_arrMonsters = [];  //List of monster instances
-    #_sImagePath;               //Path to Monster image
-    #_oImg;		                //Link to image
-    #_iImgSize;                 //Image size in pixels
-    #_bMoved;                   //Moving indication flag
-    #_rSpeedRatio;              //The ratio of the speed of monsters relative to the speed of the board
+    static #_arrMonsters = [];          //List of monster instances
+    static #_oMonstersConfig;           //Monsters configuration object
+    static #_iFirstMonsterInitialPos_X; //Starting position on the X-axis of the first monster added to the board
+    static #_iFirstMonsterInitialPos_Y; //Starting position on the Y-axis of the first monster added to the board
+    #_sImagePath;                       //Path to Monster image
+    #_oImg;		                        //Link to image
+    #_iImgSize;                         //Image size in pixels
+    #_bMoved;                           //Moving indication flag
+    #_rSpeedRatio;                      //The ratio of the speed of monsters relative to the speed of the board
 
     //#endregion //Fields
+
+    
 
     //#region Constructors--------------------------------------------------
 
     //Main Constructor
     //Arguments:
-    //  -   oBoard      - Link to instance of game board
-    //  -   oCanvas     - Link to instance of canvas object
-    //  -   rCenter_X   - The x-coordinate of the center of the Pac Man
-    //  -   rCenter_Y   - The y-coordinate of the center of the Pac Man
-    //  -   sImagePath  - Path to Monster image
-    //  -   iImgSize    - Size of Monster image(In px)
-    //  -   rSpeedRatio - The ratio of the speed of monsters relative to the speed of the board
+    //  -   oBoard          - Link to instance of game board
+    //  -   oMonstersConfig - Monsters configuration object
     //Return:
     //  -   None
-    constructor(oBoard, oCanvas, rCenter_X, rCenter_Y, sImagePath, iImgSize, rSpeedRatio)
+    constructor(oBoard, oMonstersConfig)
     {
-        super(oCanvas,oBoard,rCenter_X,rCenter_Y,iImgSize,iImgSize);
+        var oMonstersCanvas = document.getElementById(oMonstersConfig.CanvasName);
+        var y;
+
+        Monster.#_oMonstersConfig = oMonstersConfig;
+        Monster.#_iFirstMonsterInitialPos_X = oBoard.LeftEntityLimit;
+        Monster.#_iFirstMonsterInitialPos_Y = oBoard.TopEntityLimit;
+        y = Monster.#setInitPosition(Monster.#_arrMonsters.length,oBoard, Monster.#_iFirstMonsterInitialPos_Y);
+
+        super(oMonstersCanvas,oBoard,Monster.#_iFirstMonsterInitialPos_X,y,Monster.#_oMonstersConfig.ImageSize,Monster.#_oMonstersConfig.ImageSize);
         
-        this.#_sImagePath = sImagePath;
-        this.#_iImgSize = iImgSize;
-        this.#_rSpeedRatio = rSpeedRatio;
+        this.#_sImagePath = Monster.#_oMonstersConfig.ArrImagePath[Monster.#_arrMonsters.length];
+        this.#_iImgSize = Monster.#_oMonstersConfig.Size;
+        this.#_rSpeedRatio = Monster.#_oMonstersConfig.SpeedRatio;
 
         this.#_oImg = new Image();
         this.#_oImg.src = this.#_sImagePath;
@@ -158,6 +99,18 @@ export class Monster extends Entity
         }
     }
     
+    static IsThereIntersection(rCenterX, rCenterY)
+    {
+        var bResult = false;
+
+        for(let i=0;i<Monster.#_arrMonsters.length && !bResult;i++)
+        {
+            bResult = Math.abs(Monster.#_arrMonsters[i].Center_X-rCenterX)<Monster.#_arrMonsters[i]._iBodyWidth/2 && Math.abs(Monster.#_arrMonsters[i].Center_Y-rCenterY)<Monster.#_arrMonsters[i]._iBodyHeight/2;
+        }
+
+        return bResult;
+    }
+
     //Moves a Monster up
     //Arguments:
     //  -   oBoard      - Link to game board
@@ -166,13 +119,14 @@ export class Monster extends Entity
     //  -   true/false - Was moved/not
     MoveUp(oBoard = -1, arrEntities = -1)
     {
-        var bIsMoved = false;
+        var oData = false;
+
         if(oBoard != -1 && arrEntities != -1 && this.#IsUpDirectionFree(arrEntities,oBoard.BoardSpeed))
         {
-            bIsMoved = super._moveUp(this.#_rSpeedRatio);
+            oData = super._moveUp(this.#_rSpeedRatio);
         }
 
-        return bIsMoved;
+        return oData.bIsMoved;
     }
 
     //Moves a Monster down
@@ -183,13 +137,14 @@ export class Monster extends Entity
     //  -   true/false - Was moved/not
     MoveDown(oBoard = -1, arrEntities = -1)
     {
-        var bIsMoved = false;
+        var oData = false;
+        
         if(oBoard != -1 && arrEntities != -1 && this.#IsDownDirectionFree(arrEntities,oBoard.BoardSpeed))
         {
-            bIsMoved = super._moveDown(this.#_rSpeedRatio);
+            oData = super._moveDown(this.#_rSpeedRatio);
         }
 
-        return bIsMoved
+        return oData.bIsMoved;
     }
 
     //Moves a Monster right
@@ -200,13 +155,14 @@ export class Monster extends Entity
     //  -   true/false - Was moved/not
     MoveRight(oBoard = -1, arrEntities = -1)
     {
-        var bIsMoved = false;
+        var oData = false;
+        
         if(oBoard != -1 && arrEntities != -1 && this.#IsRightDirectionFree(arrEntities,oBoard.BoardSpeed))
         {
-            bIsMoved = super._moveRight(this.#_rSpeedRatio);
+            oData = super._moveRight(this.#_rSpeedRatio);
         }
 
-        return bIsMoved
+        return oData.bIsMoved;
     }
 
     //Moves a Monster left
@@ -217,13 +173,14 @@ export class Monster extends Entity
     //  -   true/false - Was moved/not
     MoveLeft(oBoard = -1, arrEntities = -1)
     {
-        var bIsMoved = false;
+        var oData = false;
+        
         if(oBoard != -1 && arrEntities != -1 && this.#IsLeftDirectionFree(arrEntities,oBoard.BoardSpeed))
         {
-            bIsMoved = super._moveLeft(this.#_rSpeedRatio);
+            oData = super._moveLeft(this.#_rSpeedRatio);
         }
 
-        return bIsMoved
+        return oData.bIsMoved;
     }
 
     //#endregion //Public Methods
@@ -434,6 +391,18 @@ export class Monster extends Entity
 
         return bIsFree;
         
+    }
+
+    //Set initial position of current monster
+    //Arguments:
+    //  -   iMonsterNum             - Number of current monster
+    //  -   oBoard                  - Link to the game board
+    //  -   iFirstMonsteInitCoord   - Initial position of first monster coordinate
+    //Return:
+    //  -   Initial position of current moster
+    static #setInitPosition(iMonsterNum, oBoard, iFirstMonsteInitCoord)
+    {
+        return iFirstMonsteInitCoord + (iMonsterNum * oBoard.BoardCellSize);
     }
 
     //#endregion //Private Methods

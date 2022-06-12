@@ -1,0 +1,214 @@
+/*New Game Menu Options Popup*/
+  /* The Modal (background) */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+  
+   /* Modal Header */
+   .modal-header {
+    background-color: rgb(40,40,40);
+    margin: 0 auto 25px;
+    position: relative;
+    height:50px;
+    width: 100%;
+  }
+
+  /* Modal Content/Box */
+  .modal-content {
+    background-color: rgb(237, 237, 237);
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 25px;
+    border: 1px solid #888;
+    width: 300px; /* Could be more or less, depending on screen size */
+    height: 485px; /* Could be more or less, depending on screen size */
+  }
+  
+  /* The Close Button */
+  /* .close {
+    color: #aaa;
+    float: right;
+    padding-right: 25px;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  } */
+
+/*region dropdown lists of OPtions popup handling*/
+details {
+	position: relative;
+	width: 250px;
+	margin-right: 1rem;
+    margin-top: 10px;
+}
+
+details[open] {
+	z-index: 1;
+}
+
+summary {
+	padding: 1rem;
+	cursor: pointer;
+	border-radius: 5px;
+	background-color: #ddd;
+	list-style: none;
+}
+
+summary::-webkit-details-marker {
+	display: none;
+}
+
+details[open] summary:before {
+	content: '';
+	display: block;
+	width: 100vw;
+	height: 100vh;
+	background: transparent;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
+summary:after {
+	content: '';
+	display: inline-block;
+	float: right;
+	width: .5rem;
+	height: .5rem;
+	border-bottom: 1px solid currentColor;
+	border-left: 1px solid currentColor;
+	border-bottom-left-radius: 2px;
+	transform: rotate(45deg) translate(50%, 0%);
+	transform-origin: center center;
+	transition: transform ease-in-out 100ms
+}
+
+summary:focus {
+	outline: none;
+}
+
+details[open] summary:after {
+	transform: rotate(-45deg) translate(0%, 0%);
+}
+
+ul {
+	width: 100%;
+	background: #ddd;
+	position: absolute;
+	top: calc(100% + .5rem);
+	left: 0;
+	padding: 1rem;
+	margin: 0;
+	box-sizing: border-box;
+	border-radius: 5px;
+	max-height: 400px;
+	overflow-y: auto;
+    list-style-type:none;
+}
+
+li {
+	margin: 0;
+	padding: 1rem 0;
+	border-bottom: 1px solid #ccc;
+}
+
+li:first-child {
+	padding-top: 0;
+}
+
+li:last-child {
+	padding-bottom: 0;
+	border-bottom: none;
+}
+
+/* FAKE SELECT */
+
+summary.radios {
+	counter-reset: radios;
+}
+
+input[type=radio] {
+	counter-increment: radios;
+	appearance: none;
+	display: none;
+}
+
+input[type=radio]:checked {
+	display: inline;
+}
+
+input[type=radio]:after {
+	content: attr(title);
+	display: inline;
+	font-size: 1rem;
+}
+
+ul.list {
+	counter-reset: labels;
+}
+
+/*endregion dropdown lists of OPtions popup handling*/
+
+label {
+	width: 100%;
+	display: block;
+	cursor: pointer;
+}
+
+/*region players fileds(Name/Color) definitions*/
+.Player
+{
+    position: relative;
+	width: 250px;
+	margin-right: 1rem;
+    margin-top: 10px;
+	cursor: pointer;
+	border-radius: 5px;
+    border-color: rgb(40,40,40);
+	background-color: #ddd;
+	list-style: none;
+	font-size: 1rem;
+    color: rgb(122, 120, 120);
+}
+
+.PlayerTbox
+{
+    position: relative;
+    margin: 5px auto 0;
+	width: 250px;
+    padding: 1rem;
+	cursor: pointer;
+	border-radius: 5px;
+    border-style:groove ;
+    border-color: #ddd;
+	background-color: #ddd;
+	list-style: none;
+	font-size: 1rem;
+    color: rgb(122, 120, 120);
+}
+
+.PlayerColor
+{
+    margin: 5px auto 0;
+	width: 250px;
+	cursor: pointer;
+	border-radius: 5px;
+    border-color: #ddd;
+	background-color: #ddd;
+}
+
+/*endregion players fileds(Name/Color) definitions*/
