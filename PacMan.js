@@ -1,7 +1,5 @@
-import {Board} from './Board.js';
-
 //The class that represents the Pac Man object
-export class PacMan extends Entity
+class PacMan extends Entity
 {
     //#region Fields--------------------------------------------------------
 

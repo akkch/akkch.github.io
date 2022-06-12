@@ -1,5 +1,5 @@
 //A class representing a cell of board
-export class Cell
+class Cell
 {
     //#region Fields--------------------------------------------------------
 

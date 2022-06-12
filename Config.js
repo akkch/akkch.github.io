@@ -1,5 +1,5 @@
 //The class that represents game configuration - for manual inputs
-export class Config
+class Config
 {
     //#region Fields--------------------------------------------------------
 
@@ -48,7 +48,7 @@ export class Config
 }
 
 //The class that represents game board configuration
-export class BoardConfig
+class BoardConfig
 {
     //#region Properties----------------------------------------------------
 
@@ -75,7 +75,7 @@ export class BoardConfig
 }
 
 //The class that represents game pac man configuration
-export class PacManConfig
+class PacManConfig
 {
     #_rPAC_MAN_BODY_RADIUS;                       //Calculated in constructor constant - Pac man body radius
 
@@ -132,7 +132,7 @@ export class PacManConfig
 }
 
 //The class that represents game monsters configuration
-export class MonstersConfig
+class MonstersConfig
 {
     //#region Fields--------------------------------------------------------
 
@@ -199,7 +199,7 @@ export class MonstersConfig
 }
 
 //The class that represents board cells configuration
-export class CellTypeConfig
+class CellTypeConfig
 {
 
     //#region Fields--------------------------------------------------------

@@ -1,7 +1,3 @@
-import {Board} from './Board.js';
-import {Monster} from './Monster.js';
-import {PacMan} from './PacMan.js';
-
 class Game
 {
     static #_oBoard;

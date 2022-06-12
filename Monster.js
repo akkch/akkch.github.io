@@ -1,7 +1,5 @@
-import {Board} from './Board.js';
-
 //The class that represents the Monster object
-export class Monster extends Entity
+class Monster extends Entity
 {
     //#region Fields--------------------------------------------------------
 
