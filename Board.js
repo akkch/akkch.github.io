@@ -1,4 +1,6 @@
-class Board
+import {Cell} from './Cell.js';
+
+export class Board
 {
     #_oCanvas;	    //Link to board canvas
     #_oContext;	    //Link to board canvas context

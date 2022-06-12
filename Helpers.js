@@ -1,5 +1,5 @@
 //The class that represents the Entity object
-class Entity
+export class Entity
 {
     //#region Fields--------------------------------------------------------
 
@@ -217,7 +217,7 @@ class Entity
 }
 
 //Class represents directional flags(For using as Enum)
-class Direction
+export class Direction
 {
     static Up = 0;
     static Down = 1;
@@ -248,7 +248,7 @@ class Direction
 }
 
 //The class represents data about all possible cell content types
-class CellsContent
+export class CellsContent
 {
     //#region Fields--------------------------------------------------------
 
@@ -337,7 +337,7 @@ class CellsContent
 }
 
 //The class represents the content type of the cell
-class Type
+export class Type
 {
     //#region Fields--------------------------------------------------------
 
@@ -436,11 +436,12 @@ class Type
 }
 
 //A class that allows to get setinterval behavior in multiple contexts
-class Timer
+export class Timer
 {
     //#region Fields--------------------------------------------------------
 
-    static #_oInstances = [];   //List of timer instances
+    static #_arrSunscribers = [];   //List of timer instances
+    static #_oThisInterval;     //Link to operated timer
     #_oOnTickInstance;          //Subscriber to the OnTick event
     #_iTicksCount;              //Couner of ticks of the current instance
     #_iRepetitionsCount;        //Counter of repetitions of the current instance
@@ -454,7 +455,7 @@ class Timer
     //Static constructor - Main timer start
     static
     {
-        window.setInterval(Timer.OnTickEventHandler, 10);
+        Timer.#_oThisInterval = window.setInterval(Timer.#onTickEventHandler, 10);
     }
 
     //Main constructor
@@ -470,29 +471,40 @@ class Timer
         this.#_iTicksCount = 0;
         this.#_iTicks = (delayMs/10)|0;
         this.#_iNumOfRepetitions = NumOfRepetitions;
-        Timer.#_oInstances.push(this);
+        Timer.#_arrSunscribers.push(this);
     }
     
     //#endregion //Constructor
 
     //#region Public Methods------------------------------------------------
 
-    //Main timer tick event handler
+    //Clear timer and subscriber array
     //Arguments:
     //  -   None
     //Return:
     //  -   None
-    static OnTickEventHandler()
+    Clear()
     {
-        for(var i in Timer.#_oInstances)
-        {
-            Timer.#_oInstances[i].#OnTick();
-        }
+        window.clearInterval(Timer.#_oThisInterval);
+        Timer.#_arrSunscribers = [];
     }
     
     //#endregion //Public Methods
 
     //#region Private Methods-----------------------------------------------
+
+    //Main timer tick event handler
+    //Arguments:
+    //  -   None
+    //Return:
+    //  -   None
+    static #onTickEventHandler()
+    {
+        for(var i in Timer.#_arrSunscribers)
+        {
+            Timer.#_arrSunscribers[i].#OnTick();
+        }
+    }
 
     //Current instance OnTick event handler
     //Arguments:
@@ -525,8 +537,8 @@ class Timer
     //  -   None
     #stop()
     {
-        var index = Timer.#_oInstances.indexOf(this);
-        Timer.#_oInstances.splice(index, 1);
+        var index = Timer.#_arrSunscribers.indexOf(this);
+        Timer.#_arrSunscribers.splice(index, 1);
     }
 
     //#endregion //Private Methods

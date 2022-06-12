@@ -19,20 +19,20 @@ function menuSymChanger(x) {
     //New game clicked event handler(As option of main menu)
     static NewGame(game)
     {
-      Menu.#_oGame = game;
-       game.SetPlayer(Options.Player1Name,Options.Player1Color);
-       game.SetPlayer(Options.Player2Name,Options.Player2Color);
-       game.StartNew(Options.BoardSize, Options.BoardSize,Options.Complexity);
-       
-       document.getElementById("Player1_Name_Present").innerHTML = Options.Player1Name;
-       document.getElementById("Player2_Name_Present").innerHTML = Options.Player2Name;
-  
-       var player1 = document.getElementById("Player1Field");
-       var player2 = document.getElementById("Player2Field");
-  
+      // Menu.#_oGame = game;
+      // game.SetPlayer(Options.Player1Name,Options.Player1Color);
+      // game.SetPlayer(Options.Player2Name,Options.Player2Color);
+      // game.StartNew(Options.BoardSize, Options.BoardSize,Options.Complexity);
+      
+      // document.getElementById("Player1_Name_Present").innerHTML = Options.Player1Name;
+      // document.getElementById("Player2_Name_Present").innerHTML = Options.Player2Name;
+
+      var player1 = document.getElementById("Player1Field");
+      var player2 = document.getElementById("Player2Field");
+
       if(!player1.classList.contains("PlayerFieldStarted"))
         player1.classList.add("PlayerFieldStarted");
-  
+
       if(!player2.classList.contains("PlayerFieldStarted"))
         player2.classList.add("PlayerFieldStarted");
   
