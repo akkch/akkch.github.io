@@ -61,7 +61,10 @@ class Cell
         this.#_bEaten = value;
 
         if(this.#_bEaten == true)
+        {
+            this.#_oContentType.oSound.play();
             this.#clearType();
+        }
     }
 
     //#endregion //Properties
@@ -100,13 +103,58 @@ class Cell
 
     //Draws the type on the canvas according to the requested coordinates
     //Arguments:
-    //  -   None
+    //  -   iRowsNum - Number of rows in the board
+    //  -   iColsNum - Number of columns in the board
     //Return:
     //  -   None
-    Draw()
+    Draw(iRowsNum, iColsNum)
     {
+        //Draw point on corner of cell
+        if(this.#_iRow!=0 && this.#_iCol!=0 && this.#_iRow!=iColsNum-1 && this.#_iCol!=iRowsNum-1)
+        {
+            let iDelta = Cell.iCellSize/2;
+            let pointSize = 1;
+
+            this.#_oContext.strokeRect(this.rCenter_X - iDelta, this.rCenter_Y - iDelta, pointSize, pointSize); //left/top
+            this.#_oContext.strokeRect(this.rCenter_X + iDelta, this.rCenter_Y - iDelta, pointSize, pointSize); //right/top
+            this.#_oContext.strokeRect(this.rCenter_X - iDelta, this.rCenter_Y + iDelta, pointSize, pointSize); //left/bottom
+            this.#_oContext.strokeRect(this.rCenter_X + iDelta, this.rCenter_Y + iDelta, pointSize, pointSize); //right/bottom
+            
+            var iBoardDir = Math.floor(Math.random() * 4);
+
+            switch(iBoardDir)
+            {
+                case Direction.Up:
+                    this.#_oContext.strokeRect(this.rCenter_X - iDelta, this.rCenter_Y - iDelta, Cell.iCellSize, pointSize);
+                    this.bUpBoard = true;
+                break;
+                case Direction.Down:
+                //   this.#_oContext.strokeRect(oCell.rCenter_X - iDelta, oCell.rCenter_Y + iDelta, Cell.iCellSize, pointSize);
+                //    oCell.bDownBoard = true;
+                break;
+                case Direction.Left:
+                    // if(j!=0 && j!=this.#_iColsNum-1 && this.arrBoardCells[i][j].bUpBoard != true && this.arrBoardCells[i][j].bDownBoard != true && this.arrBoardCells[i][j].bRightBoard != true
+                    //     && this.arrBoardCells[i][j-1].bUpBoard != true && this.arrBoardCells[i][j-1].bDownBoard != true && this.arrBoardCells[i][j-1].bRightBoard != true && this.arrBoardCells[i][j-1].bLeftBoard != true)
+                    // {
+                    //     this.#_oContext.strokeRect(this.arrBoardCells[i][j].rCenter_X - iDelta, this.arrBoardCells[i][j].rCenter_Y - iDelta, Cell.iCellSize, pointSize);
+                    //     this.#_oContext.strokeRect(this.arrBoardCells[i][j].rCenter_X - iDelta, this.arrBoardCells[i][j].rCenter_Y - iDelta, pointSize, Cell.iCellSize);
+                    //     this.arrBoardCells[i][j].bLeftBoard = true;
+                    //     this.arrBoardCells[i][j-1].bRightBoard = true;
+                    // }
+                break;
+                case Direction.Right:
+                //   this.#_oContext.strokeRect(oCell.rCenter_X - iDelta, oCell.rCenter_Y + iDelta, pointSize, Cell.iCellSize);
+                //   oCell.bRightBoard = true;
+                break;
+            }
+        }
+
         this.#_oContentType.Draw(this.#_oContext,this.#_rCenter_X,this.#_rCenter_Y);
     }
+    
+    //#endregion //Public Methods
+
+    //#region Private Methods-----------------------------------------------
 
     //Definition of the coordinates of the cell center
     //Arguments:
@@ -129,10 +177,6 @@ class Cell
         this.#_oContext.clearRect(this.rCenter_X - this.#_oContentType.iImageSize/2, this.rCenter_Y - this.#_oContentType.iImageSize/2, this.#_oContentType.iImageSize , this.#_oContentType.iImageSize);
     }
 
-    
-    //#endregion //Public Methods
-
-    //#region Private Methods-----------------------------------------------
     //#endregion //Private Methods
 
 }

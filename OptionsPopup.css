@@ -29,7 +29,7 @@
     padding: 25px;
     border: 1px solid #888;
     width: 300px; /* Could be more or less, depending on screen size */
-    height: 485px; /* Could be more or less, depending on screen size */
+    height: 100px; /* Could be more or less, depending on screen size */
   }
   
   /* The Close Button */
@@ -187,9 +187,8 @@ label {
 
 .PlayerTbox
 {
-    position: relative;
-    margin: 5px auto 0;
-	width: 250px;
+    margin: 10px auto;
+	width: 215px;
     padding: 1rem;
 	cursor: pointer;
 	border-radius: 5px;
@@ -203,7 +202,7 @@ label {
 
 .PlayerColor
 {
-    margin: 5px auto 0;
+    margin: auto;
 	width: 250px;
 	cursor: pointer;
 	border-radius: 5px;

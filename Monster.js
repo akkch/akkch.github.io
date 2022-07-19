@@ -15,8 +15,6 @@ class Monster extends Entity
 
     //#endregion //Fields
 
-    
-
     //#region Constructors--------------------------------------------------
 
     //Main Constructor
@@ -27,7 +25,7 @@ class Monster extends Entity
     //  -   None
     constructor(oBoard, oMonstersConfig)
     {
-        var oMonstersCanvas = document.getElementById(oMonstersConfig.CanvasName);
+        var oMonstersCanvas = document.getElementById(oMonstersConfig.sCanvasName);
         var y;
 
         Monster.#_oMonstersConfig = oMonstersConfig;
@@ -35,11 +33,11 @@ class Monster extends Entity
         Monster.#_iFirstMonsterInitialPos_Y = oBoard.TopEntityLimit;
         y = Monster.#setInitPosition(Monster.#_arrMonsters.length,oBoard, Monster.#_iFirstMonsterInitialPos_Y);
 
-        super(oMonstersCanvas,oBoard,Monster.#_iFirstMonsterInitialPos_X,y,Monster.#_oMonstersConfig.ImageSize,Monster.#_oMonstersConfig.ImageSize);
+        super(oMonstersCanvas,oBoard,Monster.#_iFirstMonsterInitialPos_X,y,Monster.#_oMonstersConfig.iImageSize,Monster.#_oMonstersConfig.iImageSize);
         
         this.#_sImagePath = Monster.#_oMonstersConfig.ArrImagePath[Monster.#_arrMonsters.length];
-        this.#_iImgSize = Monster.#_oMonstersConfig.Size;
-        this.#_rSpeedRatio = Monster.#_oMonstersConfig.SpeedRatio;
+        this.#_iImgSize = Monster.#_oMonstersConfig.iImageSize;
+        this.#_rSpeedRatio = Monster.#_oMonstersConfig.rSpeedRatio;
 
         this.#_oImg = new Image();
         this.#_oImg.src = this.#_sImagePath;
@@ -55,6 +53,21 @@ class Monster extends Entity
     //#endregion //Constructor
 
     //#region Public Methods------------------------------------------------
+
+    //Remove monsters from the canvas and release the memory allocated for the array where they are stored
+    //Arguments:
+    //  -   None
+    //Return:
+    //  -   None
+    static Clear()
+    {
+        for(let i=0;i<Monster.#_arrMonsters.length;i++)
+        {
+            Monster.#_arrMonsters[i].Clear();
+        }
+
+        Monster.#_arrMonsters.length = 0;
+    }
 
     //On tick event handler
     //Arguments:
@@ -97,13 +110,19 @@ class Monster extends Entity
         }
     }
     
+    //Check if there is intersection between one of monsters and requested coordinates
+    //Arguments:
+    //  -   rCenterX - Coordinate on X-axis
+    //  -   rCenterY - Coordinate on Y-axis
+    //Return:
+    //  -   true/false - there is intersection/no
     static IsThereIntersection(rCenterX, rCenterY)
     {
         var bResult = false;
 
         for(let i=0;i<Monster.#_arrMonsters.length && !bResult;i++)
         {
-            bResult = Math.abs(Monster.#_arrMonsters[i].Center_X-rCenterX)<Monster.#_arrMonsters[i]._iBodyWidth/2 && Math.abs(Monster.#_arrMonsters[i].Center_Y-rCenterY)<Monster.#_arrMonsters[i]._iBodyHeight/2;
+            bResult = Math.abs(Monster.#_arrMonsters[i].rCenter_X-rCenterX)<Monster.#_arrMonsters[i]._iBodyWidth/2 && Math.abs(Monster.#_arrMonsters[i].rCenter_Y-rCenterY)<Monster.#_arrMonsters[i]._iBodyHeight/2;
         }
 
         return bResult;
@@ -193,7 +212,7 @@ class Monster extends Entity
     #draw()
     {
         this._clearEntity();
-        this.#drawImage(this._oContext, this.#_oImg, this.#getImgCoord(this.Center_X), this.#getImgCoord(this.Center_Y));
+        this.#drawImage(this._oContext, this.#_oImg, this.#getImgCoord(this.rCenter_X), this.#getImgCoord(this.rCenter_Y));
     }
 
     //Draw type image
@@ -233,7 +252,7 @@ class Monster extends Entity
     //  -   true/false - Located on the same row/not
     #InRow(oEntity,iDelta)
     {
-        return (this.Center_Y-this._iBodyHeight/2 - iDelta) < (oEntity.Center_Y + oEntity._iBodyHeight/2) && (this.Center_Y+this._iBodyHeight/2 + iDelta) > (oEntity.Center_Y - oEntity._iBodyHeight/2);
+        return (this.rCenter_Y-this._iBodyHeight/2 - iDelta) < (oEntity.rCenter_Y + oEntity._iBodyHeight/2) && (this.rCenter_Y+this._iBodyHeight/2 + iDelta) > (oEntity.rCenter_Y - oEntity._iBodyHeight/2);
     }
 
     //Check if an entity instance is on the same column as this instance
@@ -244,7 +263,7 @@ class Monster extends Entity
     //  -   true/false - Located on the same column/not
     #inCol(oEntity,iDelta)
     {
-        return ((this.Center_X-this._iBodyHeight/2 - iDelta) < (oEntity.Center_X + oEntity._iBodyHeight/2) && (this.Center_X+this._iBodyHeight/2 + iDelta) > (oEntity.Center_X - oEntity._iBodyHeight/2));
+        return ((this.rCenter_X-this._iBodyHeight/2 - iDelta) < (oEntity.rCenter_X + oEntity._iBodyHeight/2) && (this.rCenter_X+this._iBodyHeight/2 + iDelta) > (oEntity.rCenter_X - oEntity._iBodyHeight/2));
     }
 
     //Check if there is any entity at the top of this instance.
@@ -259,7 +278,7 @@ class Monster extends Entity
 
         for(let i=0;i<arrEntities.length && bIsFree;i++)
         {
-            if(!(this.Center_X == arrEntities[i].Center_X && this.Center_Y == arrEntities[i].Center_Y))
+            if(!(this.rCenter_X == arrEntities[i].rCenter_X && this.rCenter_Y == arrEntities[i].rCenter_Y))
             {
                 if(!this.#inCol(arrEntities[i],iDelta))
                 {
@@ -267,7 +286,7 @@ class Monster extends Entity
                 }
                 else
                 {
-                    if((this.Center_Y - this._iBodyHeight/2 - iDelta)  < (arrEntities[i].Center_Y + arrEntities[i]._iBodyHeight/2) && (this.Center_Y - this._iBodyHeight/2 - iDelta)  > (arrEntities[i].Center_Y - arrEntities[i]._iBodyHeight/2))
+                    if((this.rCenter_Y - this._iBodyHeight/2 - iDelta)  < (arrEntities[i].rCenter_Y + arrEntities[i]._iBodyHeight/2) && (this.rCenter_Y - this._iBodyHeight/2 - iDelta)  > (arrEntities[i].rCenter_Y - arrEntities[i]._iBodyHeight/2))
                     {
                         bIsFree = false;
                     }
@@ -295,7 +314,7 @@ class Monster extends Entity
 
         for(let i=0;i<arrEntities.length && bIsFree;i++)
         {
-            if(!(this.Center_X == arrEntities[i].Center_X && this.Center_Y == arrEntities[i].Center_Y))
+            if(!(this.rCenter_X == arrEntities[i].rCenter_X && this.rCenter_Y == arrEntities[i].rCenter_Y))
             {
                 if(!this.#inCol(arrEntities[i],iDelta))
                 {
@@ -303,7 +322,7 @@ class Monster extends Entity
                 }
                 else
                 {
-                    if((this.Center_Y + this._iBodyHeight/2 + iDelta)  > (arrEntities[i].Center_Y - arrEntities[i]._iBodyHeight/2) && (this.Center_Y + this._iBodyHeight/2 + iDelta)  < (arrEntities[i].Center_Y + arrEntities[i]._iBodyHeight/2))
+                    if((this.rCenter_Y + this._iBodyHeight/2 + iDelta)  > (arrEntities[i].rCenter_Y - arrEntities[i]._iBodyHeight/2) && (this.rCenter_Y + this._iBodyHeight/2 + iDelta)  < (arrEntities[i].rCenter_Y + arrEntities[i]._iBodyHeight/2))
                     {
                         bIsFree = false;
                     }
@@ -331,7 +350,7 @@ class Monster extends Entity
 
         for(let i=0;i<arrEntities.length && bIsFree;i++)
         {
-            if(!(this.Center_X == arrEntities[i].Center_X && this.Center_Y == arrEntities[i].Center_Y))
+            if(!(this.rCenter_X == arrEntities[i].rCenter_X && this.rCenter_Y == arrEntities[i].rCenter_Y))
             {
                 if(!this.#InRow(arrEntities[i],iDelta))
                 {
@@ -339,7 +358,7 @@ class Monster extends Entity
                 }
                 else
                 {
-                    if((this.Center_X + this._iBodyHeight/2 + iDelta)  > (arrEntities[i].Center_X - arrEntities[i]._iBodyHeight/2) && (this.Center_X + this._iBodyHeight/2 + iDelta)  < (arrEntities[i].Center_X + arrEntities[i]._iBodyHeight/2))
+                    if((this.rCenter_X + this._iBodyHeight/2 + iDelta)  > (arrEntities[i].rCenter_X - arrEntities[i]._iBodyHeight/2) && (this.rCenter_X + this._iBodyHeight/2 + iDelta)  < (arrEntities[i].rCenter_X + arrEntities[i]._iBodyHeight/2))
                     {
                         bIsFree = false;
                     }
@@ -367,7 +386,7 @@ class Monster extends Entity
 
         for(let i=0;i<arrEntities.length && bIsFree;i++)
         {
-            if(!(this.Center_X == arrEntities[i].Center_X && this.Center_Y == arrEntities[i].Center_Y))
+            if(!(this.rCenter_X == arrEntities[i].rCenter_X && this.rCenter_Y == arrEntities[i].rCenter_Y))
             {
                 if(!this.#InRow(arrEntities[i],iDelta))
                 {
@@ -375,7 +394,7 @@ class Monster extends Entity
                 }
                 else
                 {
-                    if((this.Center_X - this._iBodyHeight/2 - iDelta)  < (arrEntities[i].Center_X + arrEntities[i]._iBodyHeight/2) && (this.Center_X - this._iBodyHeight/2 - iDelta)  > (arrEntities[i].Center_X - arrEntities[i]._iBodyHeight/2))
+                    if((this.rCenter_X - this._iBodyHeight/2 - iDelta)  < (arrEntities[i].rCenter_X + arrEntities[i]._iBodyHeight/2) && (this.rCenter_X - this._iBodyHeight/2 - iDelta)  > (arrEntities[i].rCenter_X - arrEntities[i]._iBodyHeight/2))
                     {
                         bIsFree = false;
                     }

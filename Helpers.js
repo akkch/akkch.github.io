@@ -19,13 +19,13 @@ class Entity
     //#region Properties----------------------------------------------------
 
     //Getter for The x-coordinate of the center of the Entity in current position
-    get Center_X()
+    get rCenter_X()
     {
         return this.#_rCenter_X;
     }
 
     //Getter for The y-coordinate of the center of the Entity in current position
-    get Center_Y()
+    get rCenter_Y()
     {
         return this.#_rCenter_Y;
     }
@@ -59,6 +59,12 @@ class Entity
 
     //#region Public Methods------------------------------------------------
 
+    //Clear the Pacman canvas
+    Clear()
+    {
+        this._oContext.clearRect(0, 0, this._oCanvas.width, this._oCanvas.height);
+    }
+
     //#endregion //Public Methods
 
     //#region Protected Methods------------------------------------------------
@@ -76,9 +82,9 @@ class Entity
         var i = Math.ceil(indexes.i_raw);
         var j = Math.ceil(indexes.j_raw);
 
-        if(this.Center_Y>Entity._oBoard.TopEntityLimit && (this.Center_X + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bUpBoard)
+        if(this.rCenter_Y>Entity._oBoard.TopEntityLimit && (this.rCenter_X + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bUpBoard)
         {
-            this.#setY(this.Center_Y - Entity._oBoard.BoardSpeed*rSpeedRatio);
+            this.#setY(this.rCenter_Y - Entity._oBoard.BoardSpeed*rSpeedRatio);
             this._iCurrentDirection = Direction.Up;
 
             bIsMoved = true;
@@ -104,9 +110,9 @@ class Entity
         var i = Math.floor(indexes.i_raw);
         var j = Math.floor(indexes.j_raw);
 
-        if(this.Center_Y<Entity._oBoard.DownEntityLimit && (this.Center_X + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bDownBoard)
+        if(this.rCenter_Y<Entity._oBoard.DownEntityLimit && (this.rCenter_X + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bDownBoard)
         {
-            this.#setY(this.Center_Y + Entity._oBoard.BoardSpeed*rSpeedRatio);
+            this.#setY(this.rCenter_Y + Entity._oBoard.BoardSpeed*rSpeedRatio);
             this._iCurrentDirection = Direction.Down;
             bIsMoved = true;
         }
@@ -131,7 +137,7 @@ class Entity
         var i = Math.floor(indexes.i_raw);
         var j = Math.floor(indexes.j_raw);
         
-        if(this.Center_X<Entity._oBoard.RightEntityLimit && (this.Center_Y + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bRightBoard)
+        if(this.rCenter_X<Entity._oBoard.RightEntityLimit && (this.rCenter_Y + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bRightBoard)
         {
             this.#setX(this.#_rCenter_X + Entity._oBoard.BoardSpeed*rSpeedRatio);
             this._iCurrentDirection = Direction.Right;
@@ -154,7 +160,7 @@ class Entity
         var i = Math.ceil(indexes.i_raw);
         var j = Math.ceil(indexes.j_raw);
         
-        if(this.Center_X>Entity._oBoard.LeftEntityLimit && (this.Center_Y + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bLeftBoard)
+        if(this.rCenter_X>Entity._oBoard.LeftEntityLimit && (this.rCenter_Y + Entity._oBoard.BoardCellSize/2)%Entity._oBoard.BoardCellSize == 0 && !Entity._oBoard.arrBoardCells[i][j].bLeftBoard)
         {
             this.#setX(this.#_rCenter_X - Entity._oBoard.BoardSpeed*rSpeedRatio);
             this._iCurrentDirection = Direction.Left;
@@ -171,7 +177,7 @@ class Entity
     //  -   None
     _clearEntity()
     {
-        this._oContext.clearRect(this.Center_X - this._iBodyWidth/2, this.Center_Y - this._iBodyHeight/2, this._iBodyWidth , this._iBodyHeight);
+        this._oContext.clearRect(this.rCenter_X - this._iBodyWidth/2, this.rCenter_Y - this._iBodyHeight/2, this._iBodyWidth , this._iBodyHeight);
     }
 
     //#endregion //Protected Methods
@@ -202,13 +208,14 @@ class Entity
         this.#_rCenter_Y = value;
     }
 
+    //Get cel indexes by coordinates
     #getIndexes()
     {
         var i_raw;
         var j_raw;
 
-        i_raw = (this.Center_Y + Entity._oBoard.BoardCellSize/2)/Entity._oBoard.BoardCellSize -1;
-        j_raw = (this.Center_X + Entity._oBoard.BoardCellSize/2)/Entity._oBoard.BoardCellSize -1;
+        i_raw = (this.rCenter_Y + Entity._oBoard.BoardCellSize/2)/Entity._oBoard.BoardCellSize -1;
+        j_raw = (this.rCenter_X + Entity._oBoard.BoardCellSize/2)/Entity._oBoard.BoardCellSize -1;
 
         return {i_raw,j_raw};
     }
@@ -254,23 +261,23 @@ class CellsContent
 
     static arrTypes         = [];   //An array that stores all possible cell content types
     static arrRemainTypes   = [];	//The array stores the number of remaining elements for each type that can be thrown onto the board.The array stores the number of remaining elements for each type that can be thrown onto the board.
-    static NoLeftElements = -1;
+    static NoLeftElements = -1;     //Indication flag - no elements from this type
 
     //#endregion //Fields
-
-    //#region Constructors--------------------------------------------------
-    
-    //#endregion //Constructor
 
     //#region Public Methods------------------------------------------------
 
     //Filling an Array with Possible Types
-    static SetConfig(oCellTypeConfig, iCellsAmount)
+    //Arguments:
+    //  -   oCellTypeConfig
+    //Return:
+    //  -   None
+    static SetConfig(oCellTypeConfig)
     {
-        for(let i=0;i<oCellTypeConfig.Ids.length;i++)
+        for(let i=0;i<oCellTypeConfig.arrIds.length;i++)
         {
-            CellsContent.arrTypes[i] = new Type(oCellTypeConfig.Ids[i], oCellTypeConfig.Scores[i], oCellTypeConfig.ImgPathes[i], oCellTypeConfig.TypeImgSize);
-            CellsContent.arrRemainTypes[i] = iCellsAmount*oCellTypeConfig.Ratios[i];
+            CellsContent.arrTypes[i] = new Type(oCellTypeConfig.arrIds[i], oCellTypeConfig.arrScores[i], oCellTypeConfig.arrImgPathes[i], oCellTypeConfig.iTypeImgSize, oCellTypeConfig.arrSndPathes[i]);
+            CellsContent.arrRemainTypes[i] = oCellTypeConfig.iCellsAmount*oCellTypeConfig.arrRatios[i];
         }
     }
 
@@ -294,7 +301,9 @@ class CellsContent
         if(iTypeId != CellsContent.NoLeftElements)
         {
             CellsContent.arrRemainTypes[iTypeId]--;
-            return CellsContent.arrTypes[iTypeId].Clone();
+            let currType = CellsContent.arrTypes[iTypeId].Clone();
+            currType.oSound = CellsContent.arrTypes[iTypeId].oSound;
+            return currType;
         }
 
         return CellsContent.NoLeftElements;
@@ -343,6 +352,7 @@ class Type
 
     #_sImagePath;   //Path to type image
     #_oImg;		    //Link to image
+    #_oSound;		//Link to sound
     #_iImgSize;     //Image size in pixels
 
     iID;     //Type ID
@@ -350,10 +360,27 @@ class Type
 
     //#endregion //Fields
 
+    //#region Properties----------------------------------------------------
+
+    //Image size getter
     get iImageSize()
     {
         return this.#_iImgSize;
     }
+
+    //Link to sound element in the DOM getter
+    get oSound()
+    {
+        return this.#_oSound;
+    }
+
+    //Link to sound element in the DOM setter
+    set oSound(value)
+    {
+        this.#_oSound = value;
+    }
+
+    //#endregion //Properties
 
     //#region Constructors--------------------------------------------------
        
@@ -363,14 +390,28 @@ class Type
     //  -   iScore      - Number of points
     //  -   sImagePath  - Path to image
     //  -   iImgSize    - Size of image
+    //  -   sSndPath  - Path to sound
     //Return:
     //  -   None
-    constructor(iID, iScore, sImagePath, iImgSize)
+    constructor(iID, iScore, sImagePath, iImgSize, sSndPath)
     {
         this.iID = iID;
         this.iScore = iScore;
         this.#_sImagePath = sImagePath;
         this.#_iImgSize = iImgSize;
+
+        this.#_oSound = document.getElementById(sSndPath);
+
+        if(!this.#_oSound)
+        {
+            this.#_oSound = document.createElement("audio");
+            this.#_oSound.src = sSndPath;
+            this.#_oSound.setAttribute("preload", "auto");
+            this.#_oSound.setAttribute("controls", "none");
+            this.#_oSound.setAttribute("id", sSndPath);
+            this.#_oSound.style.display = "none";
+            document.body.appendChild(this.#_oSound);
+        }
     }
 
     //#endregion //Constructor
@@ -441,6 +482,7 @@ class Timer
     //#region Fields--------------------------------------------------------
 
     static #_oInstances = [];   //List of timer instances
+    static #_oTimer;            //Link to timer object
     #_oOnTickInstance;          //Subscriber to the OnTick event
     #_iTicksCount;              //Couner of ticks of the current instance
     #_iRepetitionsCount;        //Counter of repetitions of the current instance
@@ -476,6 +518,13 @@ class Timer
     //#endregion //Constructor
 
     //#region Public Methods------------------------------------------------
+
+    //Clear interval and all instances
+    static Clear()
+    {
+        window.clearInterval(Timer.#_oTimer);
+        Timer.#_oInstances.length = 0;
+    }
 
     //Main timer tick event handler
     //Arguments:
